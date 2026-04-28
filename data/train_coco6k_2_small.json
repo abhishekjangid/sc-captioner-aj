@@ -1,0 +1,173 @@
+[
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "The picture depicts a vast snowy landscape, with two people cross-country skiing across the vast snowy expanse. The person closer to the foreground is wearing a bright pink vest, a blue jacket underneath, and black pants. She is skiing towards the camera, with slender ski poles in both hands and dark ski boards, near the center of the picture. In the background farther away, another skier wearing darker clothes is following along a different track. The background features a dense evergreen forest extending to snow-covered mountains. Scattered across the snow on both sides of the skiers are a few small evergreen trees."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "The picture depicts a vast snowy landscape, with two people cross-country skiing. The person closer to the foreground is wearing a bright pink vest, a blue jacket underneath, and black pants. He is skiing towards the camera, with ski poles in both hands, near the center of the picture. In the background farther away, another skier wearing darker clothes is following along the same path. The background features a dense evergreen forest extending to snow-covered mountains. Scattered across the snow on both sides of the skiers are a few small evergreen trees."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000469961.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "A round pizza is placed on a white plate, which is set on a brown wooden table. The edge of the pizza is golden brown with some charred parts. The pizza is topped with red tomato chunks, white cheese, possibly mozzarella, and some green herbs for garnish. In the lower left corner of the image, there is a silver knife and a partially visible silver fork placed on a light gray placemat. The cutlery is made of metal. The knife is located above the fork, both placed parallel to each other, with the handles facing the bottom edge of the image. The placemat and cutlery are placed near the edge of the table, right next to the plate with the pizza."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "A round pizza is placed on a white plate, which is set on a wooden table. The edge of the pizza is golden brown with some charred parts. The pizza is topped with red tomato chunks, white cheese, possibly mozzarella, and some green herbs for garnish. In the lower left corner of the image, there is a knife and a fork placed on a light gray folded napkin. The cutlery is made of metal. The knife is located to the left of the fork, both placed parallel to each other, with the handles facing the bottom edge of the image. The napkin and cutlery are placed near the edge of the table, right next to the plate with the pizza."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000508801.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "A red octagonal stop sign with the word \"STOP\" written in white capital letters, prominently located in the central foreground, attached to a vertical white post, with three white posts visible around the sign. Below it in the parking lot, there are a few white painted lines indicating parking spaces and a no-parking zone. A yellow and black striped protective post leans and partially obstructs the post of the stop sign. To the left of the sign, a black sedan is parked in a marked parking space. In the background, more parked vehicles can be seen across the parking lot. Evenly spaced tall streetlights surround the parking lot, and there are some low buildings. The blue sky is visible with a few scattered white clouds. The ground of the parking lot is made of concrete."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "A red octagonal stop sign with the word \"STOP\" written in white capital letters, prominently located in the central foreground, attached to a vertical white post. Below it in the parking lot, there are a few white painted lines indicating parking spaces and a no-parking zone. A yellow and black striped protective post leans and partially obstructs the post of the stop sign. To the left of the sign, a black sedan is parked in a marked parking space. In the background, more parked vehicles can be seen across the parking lot. Evenly spaced streetlights surround the parking lot, and there are some buildings. The sky is visible with a few scattered clouds."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000334121.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "In a city street scene, a large bus drives by an empty street, with a striking advertisement on its side. The ad covers one side of the entire bus, featuring a man facing to the left, looking serious, wearing a jacket. The text on the ad reads: \"IF HE'S COMING FOR YOU, YOU DESERVE IT.\" followed by “Tom Cruise Jack Reacher December 21st” in bold letters. The ad's text uses black and red colors. On top of the bus, a window and lights can be seen.\n\nIn the foreground, a red Ford vehicle with a clear but partially visible license plate is parked on the street, slightly peeking out. In the middle left of the frame, a yellow taxi is driving by, positioned slightly in front of the red vehicle.\n\nIn the background, there are tall buildings with several small shops at street level. The storefront has a sign reading \"ELECTRONICS\" and a shop sign with a yellow polygon symbol. The building's exterior is red brick and beige wall structure with decorative details."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "In a city street scene, a large bus drives by, with a striking advertisement on its side. The ad covers one side of the entire bus, featuring a man facing to the right, looking serious, wearing a jacket and sunglasses. The text on the ad reads: \"IF HE'S COMING FOR YOU, YOU DESERVE IT.\" followed by “Tom Cruise Jack Reacher December 21st” in bold letters. The ad's text uses black, white, and red colors. On top of the bus, several windows and lights can be seen.\n\nIn the foreground, a red Ford vehicle with a clearly visible license plate is parked on the street, slightly peeking out. In the middle left of the frame, a yellow taxi is driving by, positioned slightly behind the red vehicle.\n\nIn the background, there are buildings with several small shops at street level. The storefront has a sign reading \"ELECTRONICS\" and another shop sign with a yellow and red diamond symbol. The building's exterior is constructed of red brick with decorative details."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000375311.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "Two aircraft are flying closely together. The aircraft on the left is a dark gray military jet fighter, characterized by its streamlined angular design and delta wings. It is slightly higher and ahead of the second aircraft. The aircraft on the right is an old-fashioned propeller plane with a distinctive camouflage pattern, and the propeller is visible at the nose. This plane's paint scheme is a combination of blue, brown, and gray, and there are other markings on the fuselage. The two aircraft appear to be at a similar altitude, maintaining formation flying. White clouds dot the blue sky."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "Two aircraft are flying closely together. The aircraft on the left is a dark gray military jet fighter, characterized by its streamlined angular design and delta wings. It is slightly higher and ahead of the second aircraft. The aircraft on the right is an old-fashioned propeller plane with a distinctive camouflage pattern, and the propeller is visible at the nose. This plane's paint scheme is a combination of green, brown, and gray, and there are other markings on the fuselage. The two aircraft appear to be at a similar altitude, maintaining formation flying."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000097790.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "On a white snow-covered ski slope, four skiers are skiing downhill. The skier in the foreground is wearing a black and blue jacket, a blue helmet, and black-rimmed ski goggles, with striped skis underfoot, slender ski poles in hand, and dark gloves. Positioned on the right side of the image, they are navigating around a gray large pole. Slightly further back, on the left, is a child in bright pink and gray attire also skiing, following the first skier’s path. In the distance on the slope, a third skier in dark clothing can be seen, along with a fourth skier wearing a red top. Snow-covered pine trees line the sides of the ski slope, and above, numerous simple ski lifts can be seen, transporting people up the mountain."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "In a snow-covered ski slope, three skiers are skiing downhill. The skier in the foreground is wearing a black and blue jacket and a blue helmet, positioned on the right side of the image, navigating around a large pole. Slightly further back, on the left, is a child in bright pink and purple attire also skiing, following the first skier’s path. In the distance on the slope, a third skier in dark clothing can be seen in the background. Snow-covered pine trees line the sides of the ski slope, and on the left, a cable car is visible, transporting people up the mountain."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000184800.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "The bathroom floor is beige and equipped with white bathroom fixtures. Against the farthest white wall, there is a large bathtub with a white curtain hanging beside it, faintly revealing a glass window. Two unfolded white towels hang on the edge of the bathtub. To the right of the bathtub is a white sink, built into the wall, above a tile backsplash. Neatly arranged items such as bottles and a soap dispenser, a toothbrush, and toothpaste in a cup are placed on the back edge of the sink. Next to the sink, on the floor, there is a silver trash can. Directly next to the sink is a white toilet with the lid open and two rolls of white toilet paper on the water tank. Next to the toilet, on the water tank, there is a package of purple sanitary products. Near the bathroom entrance, a child wearing a pink top and blue pants is seen crawling on the floor towards the door. The bathroom door is light white."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "The bathroom floor is beige and equipped with white bathroom fixtures. Against the farthest wall, there is a bathtub with a white curtain hanging beside it. An unfolded white towel hangs on the edge of the bathtub. To the right of the bathtub is a white sink, built into the wall, below a tile backsplash. Neatly arranged items such as bottles and a soap dispenser are placed on the back edge of the sink. Next to the sink, on the floor, there is a silver trash can. Directly next to the sink is a white toilet with the lid open and a roll of toilet paper on the water tank. Next to the toilet, on the water tank, there is a package of purple sanitary products. Near the bathroom entrance, a child wearing a pink top and blue pants is seen crawling on the floor towards the toilet."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000214191.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "The picture depicts a spacious kitchen with wooden cabinets and flooring. On the left, there is an L-shaped countertop topped with polished dark granite. A double sink is situated near a large window, with a modern faucet extending above the sink. Various kitchen appliances, such as a toaster and a microwave, are placed on the countertop.\n\nOpposite, there is a large kitchen island with a curved edge, the top of which is also dark granite. Around the island, there are three cushioned barstools with wooden legs and backs. Above the island, multiple pendant lights hang in a row from the ceiling.\n\nIn the background, stainless steel appliances such as a rectangular fridge and a large stove with a top-mounted range hood are embedded into the cabinets. The wall in the background features a mosaic tile design, adding decorative elements to the kitchen."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "The picture depicts a spacious kitchen with wooden cabinets and flooring. On the left, there is an L-shaped countertop topped with polished dark granite. A double sink is situated below a large window, with a modern faucet extending above the sink. Various kitchen appliances, such as a toaster and a microwave, are placed on the countertop.\n\nOpposite, there is a large kitchen island with a curved edge, the top of which is also dark granite. Around the island, there are four cushioned barstools with wooden legs and backs. Above the island, multiple pendant lights hang in a row from the ceiling.\n\nIn the background, stainless steel appliances such as the fridge and a large stove with a top-mounted range hood are embedded into the cabinets. The wall in the background features a mosaic tile design, adding decorative elements to the kitchen."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000514251.jpg"
+        ]
+    },
+    {
+        "conversations": [
+            {
+                "from": "human",
+                "value": "<image>Caption this image as accurately as possible, without speculation. Describe what you see."
+            }
+        ],
+        "chosen": {
+            "from": "gpt",
+            "value": "This is an image of vegetable pizza preparation. A pizza on a rectangular metal baking tray is placed on a wooden surface. A layer of red tomato sauce is spread on the pizza, extending to the edge of the dough. On top of the tomato sauce, there is a layer of light shredded cheese, evenly distributed over the surface. Under the cheese, evenly distributed round vegetable slices, likely eggplant, can be seen. Additionally, there are some mushroom slices mixed in the toppings. In the upper right corner of the image, a person's hands appear with a motion blur effect. On the surrounding wooden surface, some white flour can be seen."
+        },
+        "rejected": {
+            "from": "gpt",
+            "value": "A pizza on a rectangular metal baking tray is placed on a wooden surface. A layer of red tomato sauce is spread on the pizza, extending to the edge of the dough. On top of the tomato sauce, there is a layer of light shredded cheese, evenly distributed over the surface. On the cheese, evenly distributed round vegetable slices, likely eggplant, can be seen. Additionally, there are some mushroom slices mixed in the toppings. In the upper right corner of the image, a person's hands appear with a motion blur effect. On the surrounding wooden surface, some flour can be seen."
+        },
+        "images": [
+            "/Users/ektajangid/source_code/mtech_project/dataset/coco/train2017/000000477810.jpg"
+        ]
+    }
+]
