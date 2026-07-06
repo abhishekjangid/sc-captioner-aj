@@ -1,0 +1,12 @@
+object precision turn1: 0.8074
+object recall turn1: 0.6292
+object f1 turn1: 0.6989
+attribute precision turn1: 0.6861
+attribute recall turn1: 0.4752
+attribute f1 turn1: 0.5535
+CAPTURE-like object precision turn1: 0.7002
+CAPTURE-like object recall turn1: 0.6293
+CAPTURE-like object f1 turn1: 0.6521
+CAPTURE-like attribute precision turn1: 0.4907
+CAPTURE-like attribute recall turn1: 0.4752
+CAPTURE-like attribute f1 turn1: 0.4783
