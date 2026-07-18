@@ -24,8 +24,11 @@ from typing import TYPE_CHECKING, Dict, Literal, Optional, Tuple, Union, List
 import torch
 import torch.nn.functional as F
 from transformers import Trainer, GenerationConfig
-from trl.trainer.online_dpo_trainer import OnlineDPOTrainer
 from trl.trainer import disable_dropout_in_model
+try:
+    from trl.trainer.online_dpo_trainer import OnlineDPOTrainer
+except ImportError:
+    from trl.trainer.dpo_trainer import DPOTrainer as OnlineDPOTrainer
 from typing_extensions import override
 
 from ...extras.constants import IGNORE_INDEX
@@ -107,7 +110,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
         
         self.generation_config = GenerationConfig(
             # max_new_tokens=512,
-            max_new_tokens=128,
+            max_new_tokens=64,
             temperature=0.9,
             top_k=0,
             top_p=1.0,
@@ -268,7 +271,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
             with torch.no_grad():
                 with io.StringIO() as f:
                     with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
-                        graph_obj = self.parser.parse(sentences_ref, beam_size=5, return_text=False,max_output_len=128, max_input_len=512)
+                        graph_obj = self.parser.parse(sentences_ref, beam_size=3, return_text=False,max_output_len=64, max_input_len=512)
             # form into set
             objects, attributes, relations, relations_original_ref, attributes_original_ref, objects_original_ref, attributes_ = merge_sentence_results(graph_obj, self.capture.text_processor)
             objects_ref = [object for object in objects if object not in self.stop_words_list and self.capture.isinsentence(object, text_ref)]
@@ -282,7 +285,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
             with torch.no_grad():
                 with io.StringIO() as f:
                     with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
-                        graph_obj = self.parser.parse(sentences_rejected, beam_size=5, return_text=False,max_output_len=128, max_input_len=512)
+                        graph_obj = self.parser.parse(sentences_rejected, beam_size=3, return_text=False,max_output_len=64, max_input_len=512)
             # form into set
             objects, attributes, relations, relations_original_rejected, attributes_original_rejected, objects_original_rejected, attributes_ = merge_sentence_results(graph_obj, self.capture.text_processor)
             objects_rejected = [object for object in objects if object not in self.stop_words_list and self.capture.isinsentence(object, text_rejected)]
@@ -297,7 +300,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
             with torch.no_grad():
                 with io.StringIO() as f:
                     with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
-                        graph_obj = self.parser.parse(sentences_gt, beam_size=5, return_text=False,max_output_len=128, max_input_len=512)
+                        graph_obj = self.parser.parse(sentences_gt, beam_size=3, return_text=False,max_output_len=64, max_input_len=512)
             # form into set
             objects, attributes, relations, relations_original_gt, attributes_original_gt, objects_original_gt, attributes_ = merge_sentence_results(graph_obj, self.capture.text_processor)
             objects_gt = [object for object in objects if object not in self.stop_words_list and self.capture.isinsentence(object, text_gt)]

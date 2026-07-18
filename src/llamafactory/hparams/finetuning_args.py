@@ -314,7 +314,7 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         default=False,
         metadata={"help": "Whether or not to train model in purely bf16 precision (without AMP)."},
     )
-    stage: Literal["pt", "sft", "rm", "ppo", "dpo", "kto"] = field(
+    stage: Literal["pt", "sft", "rm", "ppo", "dpo", "kto", "sc"] = field(
         default="sft",
         metadata={"help": "Which stage will be performed in training."},
     )
@@ -346,6 +346,24 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         default=False,
         metadata={"help": "Whether or not to save the training loss curves."},
     )
+
+    verification_enabled: bool = field(
+    default=True,
+    metadata={"help": "Whether or not to enable YOLO-based object verification in SC training."},
+    )
+    verification_model: str = field(
+        default="yolov8n.pt",
+        metadata={"help": "The YOLO model checkpoint used for verification-aware SC training."},
+    )
+    verification_threshold: float = field(
+        default=0.40,
+        metadata={"help": "Confidence threshold used by the verification model. Must be between 0.0 and 1.0."},
+    )
+    explainability_enabled: bool = field(
+        default=True,
+        metadata={"help": "Whether or not to generate explanation reports for SC corrections and predictions."},
+    )
+    
 
     def __post_init__(self):
         def split_arg(arg):
