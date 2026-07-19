@@ -355,15 +355,28 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         default="yolov8n.pt",
         metadata={"help": "The YOLO model checkpoint used for verification-aware SC training."},
     )
+    verification_allow_download: bool = field(
+        default=False,
+        metadata={"help": "Whether Ultralytics is allowed to download YOLO weights if they are not available locally."},
+    )
     verification_threshold: float = field(
         default=0.40,
         metadata={"help": "Confidence threshold used by the verification model. Must be between 0.0 and 1.0."},
+    )
+    verification_penalty_reduction: float = field(
+        default=1.0,
+        metadata={
+            "help": "Multiplier applied to hallucination penalties when YOLO verifies an added object. 1.0 removes the penalty and 0.0 keeps the full penalty."
+        },
     )
     explainability_enabled: bool = field(
         default=True,
         metadata={"help": "Whether or not to generate explanation reports for SC corrections and predictions."},
     )
-    
+    save_explanation_report: bool = field(
+        default=True,
+        metadata={"help": "Whether or not to write explanation reports into generated prediction outputs."},
+    )
 
     def __post_init__(self):
         def split_arg(arg):
@@ -383,7 +396,9 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         assert self.finetuning_type in ["lora", "freeze", "full"], "Invalid fine-tuning method."
         assert self.ref_model_quantization_bit in [None, 8, 4], "We only accept 4-bit or 8-bit quantization."
         assert self.reward_model_quantization_bit in [None, 8, 4], "We only accept 4-bit or 8-bit quantization."
-
+        assert 0.0 <= self.verification_threshold <= 1.0, "verification_threshold must be between 0.0 and 1.0."
+        assert 0.0 <= self.verification_penalty_reduction <= 1.0, "verification_penalty_reduction must be between 0.0 and 1.0."
+        
         if self.stage == "ppo" and self.reward_model is None:
             raise ValueError("`reward_model` is necessary for PPO training.")
 

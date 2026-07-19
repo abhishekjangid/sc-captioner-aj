@@ -1,6 +1,7 @@
 '''
 rewards.py: 这个文件存放一些capture指标相关的计算函数
 '''
+from typing import Any, Callable, Mapping, Optional, Sequence
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from nltk import pos_tag, word_tokenize
@@ -13,6 +14,37 @@ from factual_scene_graph.evaluation.soft_spice_evaluation import encode_phrases
 import numpy as np
 
 from .explanation_utils import generate_explanation
+
+def compute_object_hallucination_penalty(
+    object_names: Sequence[str],
+    image_path: Optional[str],
+    verify_object_fn: Optional[Callable[[Optional[str], str], Mapping[str, Any]]] = None,
+    verification_penalty_reduction: float = 1.0,
+    hallucination_weight: float = 0.25,
+    max_penalty: float = 0.75,
+) -> float:
+    """Compute hallucination penalty for newly added objects with optional verification.
+
+    When verification is unavailable or disabled, this falls back to the original
+    SC-Captioner behavior and applies the full hallucination penalty.
+    """
+    if not object_names:
+        return 0.0
+
+    reduction = min(max(float(verification_penalty_reduction), 0.0), 1.0)
+    penalty = 0.0
+    for object_name in object_names:
+        object_penalty = float(hallucination_weight)
+        if verify_object_fn is not None:
+            try:
+                verification = verify_object_fn(image_path, object_name) or {}
+            except Exception:
+                verification = {}
+
+            if bool(verification.get("verified", False)):
+                object_penalty *= 1.0 - reduction
+        penalty += object_penalty
+    return min(penalty, float(max_penalty))
 
 def merge_sentence_results(results, text_processor):
     # from IPython import embed; embed()
@@ -168,6 +200,10 @@ def build_reward_explanation_report(
     added_objects,
     removed_objects,
     yolo_verification_results,
+    added_attributes=None,
+    removed_attributes=None,
+    added_relations=None,
+    removed_relations=None
 ):
     """Build a structured explanation payload for SC-Captioner reward updates."""
     return generate_explanation(
@@ -176,4 +212,8 @@ def build_reward_explanation_report(
         added_objects=list(added_objects),
         removed_objects=list(removed_objects),
         yolo_verification_results=yolo_verification_results,
+        added_attributes=added_attributes,
+        removed_attributes=removed_attributes,
+        added_relations=added_relations,
+        removed_relations=removed_relations
     )

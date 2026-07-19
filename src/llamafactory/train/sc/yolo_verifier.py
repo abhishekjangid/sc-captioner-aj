@@ -17,9 +17,11 @@ class YoloObjectVerifier:
         self,
         model_name: str = "yolov8n.pt",
         confidence_threshold: float = 0.25,
+        allow_download: bool = False,
     ) -> None:
         self.model_name = model_name
         self.confidence_threshold = confidence_threshold
+        self.allow_download = allow_download
         self._model = None
         self._device: Optional[str] = None
         self._cache: Dict[Path, List[Dict[str, Any]]] = {}
@@ -37,24 +39,32 @@ class YoloObjectVerifier:
 
         image = Path(image_path).expanduser().resolve()
         if not image.is_file():
-            raise FileNotFoundError(f"Image not found: {image}")
+            LOGGER.warning("YOLO verification skipped because image was not found: %s", image)
+            return self._empty_result(error=f"Image not found: {image}")
 
         try:
             detections = self._get_detections(image)
         except Exception as exc:
             LOGGER.exception("YOLO verification failed for image=%s object=%s", image, normalized_object)
             if isinstance(exc, YoloVerificationError):
-                raise
-            raise YoloVerificationError(str(exc)) from exc
+                return self._empty_result(error=str(exc))
+            return self._empty_result(error=str(exc))
 
         best_confidence = 0.0
+        matched_label: Optional[str] = None
         for detection in detections:
             detected_name = detection["name"]
-            if detected_name == normalized_object:
+            if self._ismatching_label(normalized_object, detected_name):
                 best_confidence = max(best_confidence, detection["confidence"])
+                if detection["confidence"] == best_confidence:
+                    matched_label = detected_name
 
         verified = best_confidence >= self.confidence_threshold
-        result = {"verified": verified, "confidence": float(best_confidence)}
+        result = {
+            "verified": verified, 
+            "confidence": float(best_confidence),
+            "matched_label": matched_label
+        }
         LOGGER.debug(
             "YOLO verification result image=%s object=%s verified=%s confidence=%.4f",
             image,
@@ -97,8 +107,14 @@ class YoloObjectVerifier:
             yolo_class = self._import_yolo()
             self._device = self._select_device()
             LOGGER.info("Loading YOLO model=%s device=%s", self.model_name, self._device)
+            model_path = Path(self.model_name).expanduser()
+            if not self.allow_download and not model_path.is_file():
+                raise YoloVerificationError(
+                    f"YOLO model file not found locally: {self.model_name}. "
+                    "Set allow_download=True to permit Ultralytics to download weights."
+                )
             try:
-                model = yolo_class(self.model_name)
+                model = yolo_class(str(model_path) if model_path.is_file() else self.model_name)
             except Exception as exc:
                 raise YoloVerificationError(f"Unable to load YOLO model {self.model_name}: {exc}") from exc
             self._model = model
@@ -133,6 +149,38 @@ class YoloObjectVerifier:
     @staticmethod
     def _normalize_object_name(object_name: str) -> str:
         return object_name.strip().lower()
+    
+    @classmethod
+    def _is_matching_label(cls, object_name: str, detected_name: str) -> bool:
+        if object_name == detected_name:
+            return True
+        object_variants = cls._label_variants(object_name)
+        detected_variants = cls._label_variants(detected_name)
+        return not object_variants.isdisjoint(detected_variants)
+
+    @staticmethod
+    def _label_variants(name: str) -> set:
+        normalized = name.strip().lower()
+        if not normalized:
+            return set()
+
+        variants = {normalized}
+        if normalized.endswith("es") and len(normalized) > 2:
+            variants.add(normalized[:-2])
+        if normalized.endswith("s") and len(normalized) > 1:
+            variants.add(normalized[:-1])
+        if not normalized.endswith("s"):
+            variants.add(normalized + "s")
+        if not normalized.endswith("es"):
+            variants.add(normalized + "es")
+        return {variant for variant in variants if variant}
+
+    @staticmethod
+    def _empty_result(error: Optional[str] = None) -> Dict[str, Any]:
+        result: Dict[str, Any] = {"verified": False, "confidence": 0.0, "matched_label": None}
+        if error is not None:
+            result["error"] = error
+        return result
 
     @staticmethod
     def _parse_results(results: Sequence[Any]) -> List[Dict[str, Any]]:
@@ -172,6 +220,6 @@ class YoloObjectVerifier:
 _DEFAULT_VERIFIER = YoloObjectVerifier()
 
 
-def verify_object(image_path: str, object_name: str) -> Dict[str, Union[float, bool]]:
+def verify_object(image_path: str, object_name: str) -> Dict[str, Any]:
     """Module-level helper for one-off object verification."""
     return _DEFAULT_VERIFIER.verify(image_path=image_path, object_name=object_name)

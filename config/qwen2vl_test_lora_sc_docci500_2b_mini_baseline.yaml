@@ -21,3 +21,11 @@ template: qwen2_vl
 top_p: 0.7
 correction_instruction: "The previous response is not very good. Please review the objects, attributes and relations in the caption. Remove that not appear in the image and add missing ones in the previous caption. Directly output the final caption: "
 self_correction: True
+
+verification_enabled: false
+explainability_enabled: false
+save_explanation_report: false
+verification_allow_download: false
+verification_model: yolov8n.pt
+verification_threshold: 0.40
+verification_penalty_reduction: 1.0

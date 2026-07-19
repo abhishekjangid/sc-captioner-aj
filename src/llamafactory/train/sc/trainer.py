@@ -18,6 +18,7 @@
 import logging
 import json
 import os
+import collections
 
 import warnings
 from collections import defaultdict
@@ -61,6 +62,22 @@ import numpy as np
 
 
 LOGGER = logging.getLogger(__name__)
+
+def _make_json_serializable(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): _make_json_serializable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_make_json_serializable(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        return [_make_json_serializable(item) for item in sorted(value, key=str)]
+    if isinstance(value, collections.defaultdict):
+        return {str(key): _make_json_serializable(item) for key, item in dict(value).items()}
+    if hasattr(value, "tolist"):
+        try:
+            return value.tolist()
+        except Exception:
+            pass
+    return value
 
 if TYPE_CHECKING:
     from datasets import Dataset
@@ -116,10 +133,13 @@ class CustomSCTrainer(OnlineDPOTrainer):
         self.latest_explanation_reports: List[Optional[Dict[str, Any]]] = []
         self.verification_enabled = finetuning_args.verification_enabled
         self.explainability_enabled = finetuning_args.explainability_enabled
+        self.save_explanation_report = finetuning_args.save_explanation_report
+        self.verification_penalty_reduction = finetuning_args.verification_penalty_reduction
         self.yolo_verifier = (
             YoloObjectVerifier(
                 model_name=finetuning_args.verification_model,
                 confidence_threshold=finetuning_args.verification_threshold,
+                allow_download=finetuning_args.verification_allow_download,
             )
             if self.verification_enabled
             else None
@@ -306,9 +326,9 @@ class CustomSCTrainer(OnlineDPOTrainer):
     def _is_yolo_verified_object(self, image_path: Optional[str], object_name: str) -> bool:
         return bool(self._verify_object_with_yolo(image_path, object_name).get("verified", False))
 
-    def _verify_object_with_yolo(self, image_path: Optional[str], object_name: str) -> Dict[str, Union[bool, float]]:
+    def _verify_object_with_yolo(self, image_path: Optional[str], object_name: str) -> Dict[str, Any]:
         if not self.verification_enabled or self.yolo_verifier is None or not image_path:
-            return {"verified": False, "confidence": 0.0}
+            return {"verified": False, "confidence": 0.0, "matched_label": None}
 
         try:
             verification = self.yolo_verifier.verify(image_path=image_path, object_name=object_name)
@@ -319,19 +339,20 @@ class CustomSCTrainer(OnlineDPOTrainer):
                 object_name,
                 exc,
             )
-            return {"verified": False, "confidence": 0.0}
+            return {"verified": False, "confidence": 0.0, "matched_label": None}
         
         return {
             "verified": bool(verification.get("verified", False)),
             "confidence": float(verification.get("confidence", 0.0)),
+            "matched_label": verification.get("matched_label"),
         }
 
     def _build_yolo_verification_results(
         self,
         image_path: Optional[str],
         object_names: List[str],
-    ) -> Dict[str, Dict[str, Union[bool, float]]]:
-        verification_results: Dict[str, Dict[str, Union[bool, float]]] = {}
+    ) -> Dict[str, Dict[str, Any]]:
+        verification_results: Dict[str, Dict[str, Any]] = {}
         for object_name in object_names:
             normalized_name = object_name.strip().lower()
             if not normalized_name or normalized_name in verification_results:
@@ -377,6 +398,10 @@ class CustomSCTrainer(OnlineDPOTrainer):
         added_objects: List[str],
         removed_objects: List[str],
         image_path: Optional[str],
+        added_attributes: Optional[Dict[str, Any]] = None,
+        removed_attributes: Optional[Dict[str, Any]] = None,
+        added_relations: Optional[List[Any]] = None,
+        removed_relations: Optional[List[Any]] = None,
     ) -> Optional[Dict[str, Any]]:
         if not self.explainability_enabled:
             return None
@@ -391,6 +416,10 @@ class CustomSCTrainer(OnlineDPOTrainer):
             added_objects=added_objects,
             removed_objects=removed_objects,
             yolo_verification_results=yolo_verification_results,
+            added_attributes=added_attributes,
+            removed_attributes=removed_attributes,
+            added_relations=added_relations,
+            removed_relations=removed_relations
         )
 
     def _build_prediction_explanation_report(
@@ -403,13 +432,17 @@ class CustomSCTrainer(OnlineDPOTrainer):
             return None
         
         try:
-            removed_objects, added_objects, _, _, _, _ = self._get_revision_for_captions(initial_caption, corrected_caption)
+            removed_objects, added_objects, removed_relations, added_relations, removed_attributes, added_attributes = self._get_revision_for_captions(initial_caption, corrected_caption)
             return self._build_explanation_report(
                 initial_caption=initial_caption,
                 corrected_caption=corrected_caption,
                 added_objects=list(added_objects),
                 removed_objects=list(removed_objects),
                 image_path=image_path,
+                added_attributes=added_attributes,
+                removed_attributes=removed_attributes,
+                added_relations=list(added_relations),
+                removed_relations=list(removed_relations),
             )
         except Exception as exc:
             LOGGER.warning("Failed to build explanation report for prediction output: %s", exc)
@@ -519,12 +552,13 @@ class CustomSCTrainer(OnlineDPOTrainer):
                     for idx, similarity in enumerate(max_sim_2)
                     if similarity < 0.6
                 ]
-                hallucinated_objects = [
-                    object_name
-                    for object_name in low_similarity_objects
-                    if not self._is_yolo_verified_object(image_path, object_name)
-                ]
-                bonus -= min(len(hallucinated_objects)*0.25, 0.75) 
+                penalty = compute_object_hallucination_penalty(
+                    object_names=low_similarity_objects,
+                    image_path=image_path,
+                    verify_object_fn=self._verify_object_with_yolo,
+                    verification_penalty_reduction=self.verification_penalty_reduction,
+                )
+                bonus -= penalty
                 bonus += min(np.sum(max_sim_2>0.7)*0.25,0.75)
             
             # removed attributes & gt (if not similar, it is good removal, if similar, it is bad removal)
@@ -555,7 +589,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
                 bonus = -1
 
             if len(text_rejected)*2 < len(text_ref):
-                bonux = -3
+                bonus = -3
 
             explanation_reports.append(
                 self._build_explanation_report(
@@ -564,11 +598,14 @@ class CustomSCTrainer(OnlineDPOTrainer):
                     added_objects=added_objects_ref_list,
                     removed_objects=removed_objects_ref_list,
                     image_path=image_path,
+                    added_attributes=added_attributes_ref,
+                    removed_attributes=removed_attributes_ref,
+                    added_relations=list(added_relations_ref),
+                    removed_relations=list(removed_relations_ref),
                 )
             )
 
             return_reward[i] = F.sigmoid(torch.tensor(rewards_soft*2 + bonus))-0.5
-            a=1    
             
         self.latest_explanation_reports = explanation_reports
         if return_reports:
@@ -737,15 +774,17 @@ class CustomSCTrainer(OnlineDPOTrainer):
                     if image_path is not None:
                         break
                 
-                explanation_report = self._build_prediction_explanation_report(
-                    initial_caption=rejected_text,
-                    corrected_caption=pred_text,
-                    image_path=image_path,
-                )
+                explanation_report = None
+                if self.save_explanation_report:
+                    explanation_report = self._build_prediction_explanation_report(
+                        initial_caption=rejected_text,
+                        corrected_caption=pred_text,
+                        image_path=image_path,
+                    )
 
                 res.append(
                     json.dumps(
-                        {
+                        _make_json_serializable({
                             "prompt": prompt_text,
                             "label": label_text,
                             "predict": pred_text,
@@ -753,7 +792,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
                             "rejected_text": rejected_text,
                             "image_path": image_path,
                             "explanation_report": explanation_report,
-                        },
+                        }),
                         ensure_ascii=False,
                     )
                 )
@@ -822,6 +861,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
         inputs: Dict[str, Union["torch.Tensor", Any]],
         prediction_loss_only: bool,
         ignore_keys: Optional[List[str]] = None,
+        **gen_kwargs,
     ) -> Tuple[Optional[float], Optional["torch.Tensor"], Optional["torch.Tensor"]]:
         r"""
         Removes the prompt part in the generated tokens.

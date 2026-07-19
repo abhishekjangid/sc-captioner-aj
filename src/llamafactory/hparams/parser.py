@@ -217,6 +217,12 @@ def get_train_args(args: Optional[Dict[str, Any]] = None) -> _TRAIN_CLS:
     if (not finetuning_args.verification_enabled) and finetuning_args.verification_model != "yolov8n.pt":
         logger.warning("`verification_model` is set but `verification_enabled` is False, so the model path will be ignored.")
 
+    if (not finetuning_args.verification_enabled) and finetuning_args.verification_penalty_reduction != 1.0:
+        logger.warning("`verification_penalty_reduction` is set but `verification_enabled` is False, so the reduction will be ignored.")
+
+    if finetuning_args.save_explanation_report and not finetuning_args.explainability_enabled:
+        logger.warning("`save_explanation_report` is True but `explainability_enabled` is False, so no explanation report will be generated.")
+
     if (training_args.do_eval or training_args.do_predict) and (
         data_args.eval_dataset is None and data_args.val_size < 1e-6
     ):

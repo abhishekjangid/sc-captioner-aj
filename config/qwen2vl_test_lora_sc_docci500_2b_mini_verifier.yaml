@@ -8,7 +8,7 @@ max_new_tokens: 1024
 max_samples: 100000
 
 model_name_or_path: saves/qwen2_vl-2b/merged/sft
-adapter_name_or_path: saves/qwen2_vl-2b/lora/sc_coco6k_mini_baseline
+adapter_name_or_path: saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier
 output_dir: saves/eval_qwen2vl-2b/sc/docci500_mini_verifier
 
 per_device_eval_batch_size: 1

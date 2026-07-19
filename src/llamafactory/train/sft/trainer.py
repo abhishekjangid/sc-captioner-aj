@@ -19,6 +19,7 @@ import json
 import os
 import contextlib
 import io
+import collections
 from types import MethodType
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
@@ -50,6 +51,21 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
+def _make_json_serializable(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): _make_json_serializable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_make_json_serializable(item) for item in value]
+    if isinstance(value, (set, frozenset)):
+        return [_make_json_serializable(item) for item in sorted(value, key=str)]
+    if isinstance(value, collections.defaultdict):
+        return {str(key): _make_json_serializable(item) for key, item in dict(value).items()}
+    if hasattr(value, "tolist"):
+        try:
+            return value.tolist()
+        except Exception:
+            pass
+    return value
 
 class CustomSeq2SeqTrainer(Seq2SeqTrainer):
     r"""
@@ -191,10 +207,12 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
         self.model_type = model_type
         self.verification_enabled = finetuning_args.verification_enabled
         self.explainability_enabled = finetuning_args.explainability_enabled
+        self.save_explaination_report = finetuning_args.save_explanation_report
         self.yolo_verifier = (
             YoloObjectVerifier(
                 model_name=finetuning_args.verification_model,
                 confidence_threshold=finetuning_args.verification_threshold,
+                allow_download=finetuning_args.verification_allow_download,
             )
             if self.verification_enabled
             else None
@@ -293,9 +311,9 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
 
         return None
 
-    def _verify_object_with_yolo(self, image_path: Optional[str], object_name: str) -> Dict[str, Union[bool, float]]:
+    def _verify_object_with_yolo(self, image_path: Optional[str], object_name: str) -> Dict[str, Any]:
         if not self.verification_enabled or self.yolo_verifier is None or not image_path:
-            return {"verified": False, "confidence": 0.0}
+            return {"verified": False, "confidence": 0.0, "matched_label": None}
 
         try:
             verification = self.yolo_verifier.verify(image_path=image_path, object_name=object_name)
@@ -306,19 +324,20 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
                 object_name,
                 exc,
             )
-            return {"verified": False, "confidence": 0.0}
+            return {"verified": False, "confidence": 0.0, "matched_label": None}
 
         return {
             "verified": bool(verification.get("verified", False)),
             "confidence": float(verification.get("confidence", 0.0)),
+            "matched_label": verification.get("matched_label")
         }
 
     def _build_yolo_verification_results(
         self,
         image_path: Optional[str],
         object_names: List[str],
-    ) -> Dict[str, Dict[str, Union[bool, float]]]:
-        verification_results: Dict[str, Dict[str, Union[bool, float]]] = {}
+    ) -> Dict[str, Dict[str, Any]]:
+        verification_results: Dict[str, Dict[str, Any]] = {}
         for object_name in object_names:
             normalized_name = object_name.strip().lower()
             if not normalized_name or normalized_name in verification_results:
@@ -408,7 +427,7 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
             return None
 
         try:
-            removed_objects, added_objects, _, _, _, _ = self._get_revision_for_captions(initial_caption, corrected_caption)
+            removed_objects, added_objects, removed_relations, added_relations, removed_attributes, added_attributes = self._get_revision_for_captions(initial_caption, corrected_caption)
             yolo_verification_results = self._build_yolo_verification_results(
                 image_path,
                 list(added_objects) + list(removed_objects),
@@ -419,6 +438,10 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
                 added_objects=list(added_objects),
                 removed_objects=list(removed_objects),
                 yolo_verification_results=yolo_verification_results,
+                added_attributes=added_attributes,
+                removed_attributes=removed_attributes,
+                added_relations=list(added_relations),
+                removed_relations=list(removed_relations),
             )
         except Exception as exc:
             logger.warning("Failed to build explanation report for prediction output: %s", exc)
@@ -721,7 +744,7 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
 
                 res.append(
                     json.dumps(
-                        {
+                        _make_json_serializable({
                             "prompt": text,
                             "label": label,
                             "predict": pred,
@@ -729,7 +752,7 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
                             "rejected_text": pred,
                             "image_path": image_path,
                             "explanation_report": explanation_report,
-                        },
+                        }),
                         ensure_ascii=False,
                     )
                 )
