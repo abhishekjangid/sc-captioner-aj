@@ -1,6 +1,6 @@
 {
   "train_coco6k_2": {
-    "file_name": "train_coco6k_2.json",
+    "file_name": "train_coco6k_2_small.json",
     "ranking": true,
     "formatting": "sharegpt",
     "columns": {

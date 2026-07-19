@@ -37,6 +37,7 @@ from .evaluation_args import EvaluationArguments
 from .finetuning_args import FinetuningArguments
 from .generating_args import GeneratingArguments
 from .model_args import ModelArguments
+from llamafactory.hparams import finetuning_args
 
 
 logger = get_logger(__name__)
@@ -209,6 +210,12 @@ def get_train_args(args: Optional[Dict[str, Any]] = None) -> _TRAIN_CLS:
 
     if training_args.do_train and data_args.dataset is None:
         raise ValueError("Please specify dataset for training.")
+    
+    if (not finetuning_args.verification_enabled) and finetuning_args.verification_threshold != 0.40:
+        logger.warning("`verification_threshold` is set but `verification_enabled` is False, so the threshold will be ignored.")
+        
+    if (not finetuning_args.verification_enabled) and finetuning_args.verification_model != "yolov8n.pt":
+        logger.warning("`verification_model` is set but `verification_enabled` is False, so the model path will be ignored.")
 
     if (training_args.do_eval or training_args.do_predict) and (
         data_args.eval_dataset is None and data_args.val_size < 1e-6

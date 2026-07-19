@@ -12,6 +12,7 @@ import contextlib
 from factual_scene_graph.evaluation.soft_spice_evaluation import encode_phrases
 import numpy as np
 
+from .explanation_utils import generate_explanation
 
 def merge_sentence_results(results, text_processor):
     # from IPython import embed; embed()
@@ -161,3 +162,18 @@ def get_revision(
 
     return removed_objects, added_objects, removed_relations, added_relations, removed_attributes, added_attributes
 
+def build_reward_explanation_report(
+    initial_caption,
+    corrected_caption,
+    added_objects,
+    removed_objects,
+    yolo_verification_results,
+):
+    """Build a structured explanation payload for SC-Captioner reward updates."""
+    return generate_explanation(
+        initial_caption=initial_caption,
+        corrected_caption=corrected_caption,
+        added_objects=list(added_objects),
+        removed_objects=list(removed_objects),
+        yolo_verification_results=yolo_verification_results,
+    )

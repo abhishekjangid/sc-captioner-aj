@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+import json
+import os
+
 import warnings
 from collections import defaultdict
 from contextlib import nullcontext
@@ -41,6 +45,7 @@ from typing import Any
 import torch.nn as nn
 
 from .reward_utils import *
+from .yolo_verifier import YoloObjectVerifier
 from capture_metric.stop_words import stop_words_list
 from sentence_transformers import SentenceTransformer
 from factual_scene_graph.parser.scene_graph_parser import SceneGraphParser
@@ -55,7 +60,11 @@ import difflib
 import numpy as np
 
 
+LOGGER = logging.getLogger(__name__)
+
 if TYPE_CHECKING:
+    from datasets import Dataset
+    from transformers.trainer_utils import PredictionOutput
     from transformers import PreTrainedModel, ProcessorMixin
 
     from ...hparams import FinetuningArguments
@@ -104,6 +113,17 @@ class CustomSCTrainer(OnlineDPOTrainer):
             "reward": [],
             "loss": [],
         }
+        self.latest_explanation_reports: List[Optional[Dict[str, Any]]] = []
+        self.verification_enabled = finetuning_args.verification_enabled
+        self.explainability_enabled = finetuning_args.explainability_enabled
+        self.yolo_verifier = (
+            YoloObjectVerifier(
+                model_name=finetuning_args.verification_model,
+                confidence_threshold=finetuning_args.verification_threshold,
+            )
+            if self.verification_enabled
+            else None
+        )
         self.correction_instruction = "The previous response is not very good. Please review the objects, attributes and relations in the caption. Remove that not appear in the image and add missing ones in the previous caption. Directly output the final caption: "
         # initialize kl loss
         self.kl_loss_fn = nn.KLDivLoss(reduction='batchmean')
@@ -256,10 +276,150 @@ class CustomSCTrainer(OnlineDPOTrainer):
             "input_ids": completion,
             "attention_mask": completion_mask,
         }
+    
+
+    @staticmethod
+    def _resolve_image_path(image_source: Any) -> Optional[str]:
+        if isinstance(image_source, str):
+            return image_source
+        
+        if isinstance(image_source, dict):
+            image_path = image_source.get("path")
+            if isinstance(image_path, str):
+                return image_path
+                
+        return None
+
+    def _get_prompt_image_path(self, prompts: Dict[str, Any], index: int) -> Optional[str]:
+        images_list = prompts.get("images_list")
+        if not images_list or index >= len(images_list):
+            return None
+            
+        image_sources = images_list[index] or []
+        for image_source in image_sources:
+            image_path = self._resolve_image_path(image_source)
+            if image_path is not None:
+                return image_path
+                
+        return None
+
+    def _is_yolo_verified_object(self, image_path: Optional[str], object_name: str) -> bool:
+        return bool(self._verify_object_with_yolo(image_path, object_name).get("verified", False))
+
+    def _verify_object_with_yolo(self, image_path: Optional[str], object_name: str) -> Dict[str, Union[bool, float]]:
+        if not self.verification_enabled or self.yolo_verifier is None or not image_path:
+            return {"verified": False, "confidence": 0.0}
+
+        try:
+            verification = self.yolo_verifier.verify(image_path=image_path, object_name=object_name)
+        except Exception as exc:
+            LOGGER.warning(
+                "YOLO verification failed for image=%s object=%s: %s",
+                image_path,
+                object_name,
+                exc,
+            )
+            return {"verified": False, "confidence": 0.0}
+        
+        return {
+            "verified": bool(verification.get("verified", False)),
+            "confidence": float(verification.get("confidence", 0.0)),
+        }
+
+    def _build_yolo_verification_results(
+        self,
+        image_path: Optional[str],
+        object_names: List[str],
+    ) -> Dict[str, Dict[str, Union[bool, float]]]:
+        verification_results: Dict[str, Dict[str, Union[bool, float]]] = {}
+        for object_name in object_names:
+            normalized_name = object_name.strip().lower()
+            if not normalized_name or normalized_name in verification_results:
+                continue
+            
+            verification_results[normalized_name] = self._verify_object_with_yolo(image_path, normalized_name)
+            
+        return verification_results
+
+    def _parse_original_scene_graph(self, text: str):
+        sentences = sent_tokenize(text)
+        with torch.no_grad():
+            with io.StringIO() as f:
+                with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
+                    graph_obj = self.parser.parse(sentences, beam_size=5, return_text=False, max_output_len=128, max_input_len=512)
+        
+        _, _, _, relations_original, attributes_original, objects_original, _ = merge_sentence_results(
+            graph_obj,
+            self.capture.text_processor,
+        )
+        return objects_original, attributes_original, relations_original
+
+    def _get_revision_for_captions(self, initial_caption: str, corrected_caption: str):
+        initial_objects, initial_attributes, initial_relations = self._parse_original_scene_graph(initial_caption)
+        corrected_objects, corrected_attributes, corrected_relations = self._parse_original_scene_graph(corrected_caption)
+        return get_revision(
+            initial_objects,
+            corrected_objects,
+            initial_attributes,
+            corrected_attributes,
+            initial_relations,
+            corrected_relations,
+            initial_caption,
+            corrected_caption,
+            self.capture.text_encoder,
+            stop_words=True,
+        )
+
+    def _build_explanation_report(
+        self,
+        initial_caption: str,
+        corrected_caption: str,
+        added_objects: List[str],
+        removed_objects: List[str],
+        image_path: Optional[str],
+    ) -> Optional[Dict[str, Any]]:
+        if not self.explainability_enabled:
+            return None
+        
+        yolo_verification_results = self._build_yolo_verification_results(
+            image_path,
+            added_objects + removed_objects,
+        )
+        return build_reward_explanation_report(
+            initial_caption=initial_caption,
+            corrected_caption=corrected_caption,
+            added_objects=added_objects,
+            removed_objects=removed_objects,
+            yolo_verification_results=yolo_verification_results,
+        )
+
+    def _build_prediction_explanation_report(
+        self,
+        initial_caption: Optional[str],
+        corrected_caption: Optional[str],
+        image_path: Optional[str],
+    ) -> Optional[Dict[str, Any]]:
+        if not self.explainability_enabled or not initial_caption or not corrected_caption:
+            return None
+        
+        try:
+            removed_objects, added_objects, _, _, _, _ = self._get_revision_for_captions(initial_caption, corrected_caption)
+            return self._build_explanation_report(
+                initial_caption=initial_caption,
+                corrected_caption=corrected_caption,
+                added_objects=list(added_objects),
+                removed_objects=list(removed_objects),
+                image_path=image_path,
+            )
+        except Exception as exc:
+            LOGGER.warning("Failed to build explanation report for prediction output: %s", exc)
+            return None
+
         
     
-    def compute_rewards(self, first_attempt_texts, second_attempt_texts, prompts):
+    def compute_rewards(self, first_attempt_texts, second_attempt_texts, prompts, return_reports: bool = False):
         return_reward = torch.zeros(len(second_attempt_texts)).to(prompts["input_ids"].device)
+        explanation_reports: List[Optional[Dict[str, Any]]] = []
         sum_reward = 0
         for i in range(len(second_attempt_texts)):
             '''
@@ -327,6 +487,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
             # initialize rewards: hard and soft
             bonus = 0 
             rewards_soft = 0
+            image_path = self._get_prompt_image_path(prompts, i)
 
             # form as list
             removed_objects_ref_list = list(removed_objects_ref)
@@ -353,7 +514,17 @@ class CustomSCTrainer(OnlineDPOTrainer):
                 sim_mat_2 = added_objects_ref_features.dot(gt_objects_features.T)
                 max_sim_2 = sim_mat_2.max(axis=1)
                 rewards_soft += (max_sim_2-0.55).mean()
-                bonus -= min(np.sum(max_sim_2<0.6)*0.25,0.75) 
+                low_similarity_objects = [
+                    added_objects_ref_list[idx]
+                    for idx, similarity in enumerate(max_sim_2)
+                    if similarity < 0.6
+                ]
+                hallucinated_objects = [
+                    object_name
+                    for object_name in low_similarity_objects
+                    if not self._is_yolo_verified_object(image_path, object_name)
+                ]
+                bonus -= min(len(hallucinated_objects)*0.25, 0.75) 
                 bonus += min(np.sum(max_sim_2>0.7)*0.25,0.75)
             
             # removed attributes & gt (if not similar, it is good removal, if similar, it is bad removal)
@@ -386,10 +557,22 @@ class CustomSCTrainer(OnlineDPOTrainer):
             if len(text_rejected)*2 < len(text_ref):
                 bonux = -3
 
+            explanation_reports.append(
+                self._build_explanation_report(
+                    initial_caption=text_rejected,
+                    corrected_caption=text_ref,
+                    added_objects=added_objects_ref_list,
+                    removed_objects=removed_objects_ref_list,
+                    image_path=image_path,
+                )
+            )
+
             return_reward[i] = F.sigmoid(torch.tensor(rewards_soft*2 + bonus))-0.5
             a=1    
             
-            
+        self.latest_explanation_reports = explanation_reports
+        if return_reports:
+            return return_reward, explanation_reports
         return return_reward
     def _compute_stage2_loss(self, model, ref_model, first_attempt, second_attempt, second_attempt_gt, prompts, ground_truth_completions):
         context_length = prompts["input_ids"].shape[1]
@@ -483,9 +666,15 @@ class CustomSCTrainer(OnlineDPOTrainer):
         # prevent extra outputs, then calculate reward scores
         old_level = hf_logging.get_verbosity()
         hf_logging.set_verbosity_error()
-        reward = self.compute_rewards(first_attempt_texts, second_attempt_texts, prompts)
+        reward, explanation_reports = self.compute_rewards(
+            first_attempt_texts, 
+            second_attempt_texts, 
+            prompts,
+            return_reports=True
+        )
         hf_logging.set_verbosity(old_level)
-        
+        prompts["explanation_reports"] = explanation_reports
+
         # Compute REINFORCE loss with KL penalty
         policy_loss = -(second_attempt_logprobs.sum(-1) * reward).mean()
         kl_loss = beta_sc * kl_div
@@ -497,6 +686,78 @@ class CustomSCTrainer(OnlineDPOTrainer):
         self.stats["loss"].append(policy_loss.item())
 
         return loss
+    
+    def save_predictions(self, dataset: "Dataset", predict_results: "PredictionOutput") -> None:
+        r"""
+        Saves model predictions with explanation reports to `output_dir`.
+
+        Backward compatible: if source texts or image paths are unavailable,
+        the prediction record is still written and the explanation is `null`.
+        """
+        if not self.is_world_process_zero():
+            return
+
+        output_prediction_file = os.path.join(self.args.output_dir, "generated_predictions.jsonl")
+        LOGGER.info("Saving prediction results to %s", output_prediction_file)
+
+        labels = np.where(
+            predict_results.label_ids != IGNORE_INDEX, predict_results.label_ids, self.tokenizer.pad_token_id
+        )
+        preds = np.where(
+            predict_results.predictions != IGNORE_INDEX, predict_results.predictions, self.tokenizer.pad_token_id
+        )
+
+        for i in range(len(preds)):
+            pad_len = np.nonzero(preds[i] != self.tokenizer.pad_token_id)[0]
+            if len(pad_len):
+                preds[i] = np.concatenate((preds[i][pad_len[0] :], preds[i][: pad_len[0]]), axis=-1)
+
+        prompt_ids = dataset["prompt_input_ids"] if "prompt_input_ids" in dataset.column_names else dataset["input_ids"]
+        decoded_inputs = self.tokenizer.batch_decode(prompt_ids, skip_special_tokens=True)
+        decoded_labels = self.tokenizer.batch_decode(labels, skip_special_tokens=True)
+        decoded_preds = self.tokenizer.batch_decode(preds, skip_special_tokens=True)
+
+        chosen_texts = dataset["chosen_text"] if "chosen_text" in dataset.column_names else [None] * len(decoded_preds)
+        rejected_texts = dataset["rejected_text"] if "rejected_text" in dataset.column_names else [None] * len(decoded_preds)
+        images = dataset["images"] if "images" in dataset.column_names else [None] * len(decoded_preds)
+
+        with open(output_prediction_file, "w", encoding="utf-8") as writer:
+            res: List[str] = []
+            for prompt_text, label_text, pred_text, chosen_text, rejected_text, image_sources in zip(
+                decoded_inputs,
+                decoded_labels,
+                decoded_preds,
+                chosen_texts,
+                rejected_texts,
+                images,
+            ):
+                image_path = None
+                for image_source in image_sources or []:
+                    image_path = self._resolve_image_path(image_source)
+                    if image_path is not None:
+                        break
+                
+                explanation_report = self._build_prediction_explanation_report(
+                    initial_caption=rejected_text,
+                    corrected_caption=pred_text,
+                    image_path=image_path,
+                )
+
+                res.append(
+                    json.dumps(
+                        {
+                            "prompt": prompt_text,
+                            "label": label_text,
+                            "predict": pred_text,
+                            "chosen_text": chosen_text,
+                            "rejected_text": rejected_text,
+                            "image_path": image_path,
+                            "explanation_report": explanation_report,
+                        },
+                        ensure_ascii=False,
+                    )
+                )
+            writer.write("\n".join(res))
     
     def training_step(self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]]) -> torch.Tensor:
         model.train()
@@ -511,6 +772,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
             "first_completion_attention_mask": inputs["first_completion_attention_mask"],
             "second_completion_input_ids": inputs["completion_input_ids"],
             "pixel_values" : inputs["pixel_values"],
+            "images_list": inputs["images_list"],
             "chosen_text": inputs["chosen_text"],
             "rejected_text": inputs["rejected_text"],
         }
