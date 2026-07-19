@@ -696,10 +696,42 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
         decoded_labels = self.tokenizer.batch_decode(labels, skip_special_tokens=True)
         decoded_preds = self.tokenizer.batch_decode(preds, skip_special_tokens=True)
         decoded_preds_turn2 = self.tokenizer.batch_decode(preds_turn2, skip_special_tokens=True)
+        images = dataset["images"] if "images" in dataset.column_names else [None] * len(decoded_preds)
 
         with open(output_prediction_file, "w", encoding="utf-8") as writer:
             res: List[str] = []
-            for text, label, pred, pred_turn2 in zip(decoded_inputs, decoded_labels, decoded_preds, decoded_preds_turn2):
-                res.append(json.dumps({"prompt": text, "label": label, "predict": pred, "predict_turn2": pred_turn2}, ensure_ascii=False))
+            for text, label, pred, pred_turn2, image_sources in zip(
+                decoded_inputs,
+                decoded_labels,
+                decoded_preds,
+                decoded_preds_turn2,
+                images,
+            ):
+                image_path = None
+                for image_source in image_sources or []:
+                    image_path = self._resolve_image_path(image_source)
+                    if image_path is not None:
+                        break
+
+                explanation_report = self._build_prediction_explanation_report(
+                    initial_caption=pred,
+                    corrected_caption=pred_turn2,
+                    image_path=image_path,
+                )
+
+                res.append(
+                    json.dumps(
+                        {
+                            "prompt": text,
+                            "label": label,
+                            "predict": pred,
+                            "predict_turn2": pred_turn2,
+                            "rejected_text": pred,
+                            "image_path": image_path,
+                            "explanation_report": explanation_report,
+                        },
+                        ensure_ascii=False,
+                    )
+                )
 
             writer.write("\n".join(res))

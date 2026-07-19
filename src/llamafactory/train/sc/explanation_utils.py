@@ -21,8 +21,11 @@ def generate_explanation_json(
     normalized_removed = _normalize_object_list(removed_objects)
     normalized_yolo = _normalize_yolo_results(yolo_verification_results)
 
-    verified_corrections = [
+    verified_added_corrections = [
         object_name for object_name in normalized_added if normalized_yolo.get(object_name, {}).get("verified", False)
+    ]
+    verified_removed_corrections = [
+        object_name for object_name in normalized_removed if normalized_yolo.get(object_name, {}).get("verified", False)
     ]
     hallucinations_removed = [
         object_name
@@ -30,7 +33,8 @@ def generate_explanation_json(
         if not normalized_yolo.get(object_name, {}).get("verified", False)
     ]
     confidence_score = _compute_confidence_score(
-        verified_corrections=verified_corrections,
+        verified_added_corrections=verified_added_corrections,
+        hallucinations_removed=hallucinations_removed,
         added_objects=normalized_added,
         removed_objects=normalized_removed,
     )
@@ -40,7 +44,8 @@ def generate_explanation_json(
         corrected_caption=corrected_caption,
         added_objects=normalized_added,
         removed_objects=normalized_removed,
-        verified_corrections=verified_corrections,
+        verified_added_corrections=verified_added_corrections,
+        verified_removed_corrections=verified_removed_corrections,
         hallucinations_removed=hallucinations_removed,
         yolo_verification_results=normalized_yolo,
     )
@@ -48,7 +53,8 @@ def generate_explanation_json(
     explanation = {
         "added_objects": normalized_added,
         "removed_objects": normalized_removed,
-        "verified_corrections": verified_corrections,
+        "verified_added_corrections": verified_added_corrections,
+        "verified_removed_corrections": verified_removed_corrections,
         "hallucinations_removed": hallucinations_removed,
         "confidence_score": confidence_score,
         "summary": summary,
@@ -74,9 +80,15 @@ def generate_explanation_text(
 
     normalized_yolo = _normalize_yolo_results(yolo_verification_results)
     verification_fragments = []
-    for object_name in explanation["verified_corrections"]:
+    for object_name in explanation["verified_added_corrections"]:
         confidence = normalized_yolo.get(object_name, {}).get("confidence", 0.0)
         verification_fragments.append(f"{object_name} ({float(confidence):.2f})")
+
+
+    verified_removed_fragments = []
+    for object_name in explanation["verified_removed_corrections"]:
+        confidence = normalized_yolo.get(object_name, {}).get("confidence", 0.0)
+        verified_removed_fragments.append(f"{object_name} ({float(confidence):.2f})")
 
     lines = [
         "SC-Captioner Explanation",
@@ -85,6 +97,7 @@ def generate_explanation_text(
         "Added objects: {}".format(_format_object_list(explanation["added_objects"])),
         "Removed objects: {}".format(_format_object_list(explanation["removed_objects"])),
         "YOLO-verified corrections: {}".format(_format_object_list(verification_fragments)),
+        "YOLO-verified removed objects: {}".format(_format_object_list(verified_removed_fragments)),
         "Hallucinations removed: {}".format(_format_object_list(explanation["hallucinations_removed"])),
         "Confidence score: {:.2f}".format(float(explanation["confidence_score"])),
         f"Summary: {explanation['summary']}",
@@ -204,7 +217,8 @@ def _build_summary(
     corrected_caption: str,
     added_objects: Sequence[str],
     removed_objects: Sequence[str],
-    verified_corrections: Sequence[str],
+    verified_added_objects: Sequence[str],
+    verified_removed_objects: Sequence[str],
     hallucinations_removed: Sequence[str],
     yolo_verification_results: Mapping[str, YoloResult],
 ) -> str:
@@ -213,9 +227,15 @@ def _build_summary(
         f"{len(added_objects)} object(s) were added and {len(removed_objects)} object(s) were removed.",
     ]
 
-    if verified_corrections:
+    if verified_added_objects:
         summary_parts.append(
-            "YOLO verified the added objects {}.".format(_format_object_list(verified_corrections))
+            "YOLO verified the added objects {}.".format(_format_object_list(verified_added_objects))
+        )
+
+
+    if verified_removed_objects:
+        summary_parts.append(
+            "YOLO still detected the removed objects {}, so these removals should be verified carefully.".format(_format_object_list(verified_removed_objects))
         )
 
     if hallucinations_removed:
@@ -226,7 +246,7 @@ def _build_summary(
         )
 
     unresolved_additions = [
-        object_name for object_name in added_objects if object_name not in verified_corrections
+        object_name for object_name in added_objects if object_name not in verified_added_objects
     ]
     if unresolved_additions:
         summary_parts.append(
@@ -241,7 +261,8 @@ def _build_summary(
     return " ".join(summary_parts)
 
 def _compute_confidence_score(
-    verified_corrections: Sequence[str],
+    verified_added_objects: Sequence[str],
+    hallucinations_removed: Sequence[str],
     added_objects: Sequence[str],
     removed_objects: Sequence[str],
 ) -> float:
@@ -249,7 +270,7 @@ def _compute_confidence_score(
     if total_corrections <= 0:
         return 0.0
 
-    confidence_score = len(verified_corrections) / float(total_corrections)
+    confidence_score = len(verified_added_objects) + len(hallucinations_removed) / float(total_corrections)
     return round(confidence_score, 4)
 
 def _format_object_list(objects: Iterable[Any]) -> str:
