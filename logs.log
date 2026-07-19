@@ -1,110 +1,38 @@
-[INFO|configuration_utils.py:739] 2026-07-19 22:12:28,237 >> Model config Qwen2VLConfig {
-  "_name_or_path": "saves/qwen2_vl-2b/merged/sft",
-  "architectures": [
-    "Qwen2VLForConditionalGeneration"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 151643,
-  "eos_token_id": 151645,
-  "hidden_act": "silu",
-  "hidden_size": 1536,
-  "image_token_id": 151655,
-  "initializer_range": 0.02,
-  "intermediate_size": 8960,
-  "max_position_embeddings": 32768,
-  "max_window_layers": 28,
-  "model_type": "qwen2_vl",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 28,
-  "num_key_value_heads": 2,
-  "rms_norm_eps": 1e-06,
-  "rope_scaling": {
-    "mrope_section": [
-      16,
-      24,
-      24
-    ],
-    "rope_type": "default",
-    "type": "default"
-  },
-  "rope_theta": 1000000.0,
-  "sliding_window": 32768,
-  "tie_word_embeddings": true,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "use_sliding_window": false,
-  "video_token_id": 151656,
-  "vision_config": {
-    "hidden_size": 1536,
-    "in_chans": 3,
-    "model_type": "qwen2_vl",
-    "spatial_patch_size": 14
-  },
-  "vision_end_token_id": 151653,
-  "vision_start_token_id": 151652,
-  "vision_token_id": 151654,
-  "vocab_size": 151936
-}
-
-07/19/2026 22:12:28 - INFO - llamafactory.model.patcher - Using KV cache for faster generation.
-[INFO|modeling_utils.py:3723] 2026-07-19 22:12:28,246 >> loading weights file saves/qwen2_vl-2b/merged/sft/model.safetensors.index.json
-[INFO|modeling_utils.py:1622] 2026-07-19 22:12:28,246 >> Instantiating Qwen2VLForConditionalGeneration model under default dtype torch.float32.
-[INFO|configuration_utils.py:1099] 2026-07-19 22:12:28,247 >> Generate config GenerationConfig {
-  "bos_token_id": 151643,
-  "eos_token_id": 151645
-}
-
-[WARNING|logging.py:328] 2026-07-19 22:12:28,252 >> `Qwen2VLRotaryEmbedding` can now be fully parameterized by passing the model config through the `config` argument. All other arguments will be removed in v4.46
-Loading checkpoint shards: 100%|███████████████████████████████████████████████████████████████████████| 3/3 [00:03<00:00,  1.23s/it]
-[INFO|modeling_utils.py:4568] 2026-07-19 22:12:31,966 >> All model checkpoint weights were used when initializing Qwen2VLForConditionalGeneration.
-
-[INFO|modeling_utils.py:4576] 2026-07-19 22:12:31,966 >> All the weights of Qwen2VLForConditionalGeneration were initialized from the model checkpoint at saves/qwen2_vl-2b/merged/sft.
-If your task is similar to the task the model of the checkpoint was trained on, you can already use Qwen2VLForConditionalGeneration for predictions without further training.
-[INFO|configuration_utils.py:1052] 2026-07-19 22:12:31,968 >> loading configuration file saves/qwen2_vl-2b/merged/sft/generation_config.json
-[INFO|configuration_utils.py:1099] 2026-07-19 22:12:31,968 >> Generate config GenerationConfig {
-  "bos_token_id": 151643,
-  "do_sample": true,
-  "eos_token_id": [
-    151645,
-    151643
-  ],
-  "pad_token_id": 151643,
-  "temperature": 0.01,
-  "top_k": 1,
-  "top_p": 0.001
-}
-
-07/19/2026 22:12:31 - INFO - llamafactory.model.model_utils.attention - Using vanilla attention implementation.
-Traceback (most recent call last):
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/peft/config.py", line 205, in _get_peft_type
-    config_file = hf_hub_download(
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 106, in _inner_fn
-    validate_repo_id(arg_value)
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 154, in validate_repo_id
-    raise HFValidationError(
-huggingface_hub.errors.HFValidationError: Repo id must be in the form 'repo_name' or 'namespace/repo_name': 'saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier'. Use `repo_type` argument if needed.
-
-During handling of the above exception, another exception occurred:
-
+7/19/2026 22:25:30 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg
+07/19/2026 22:25:30 - INFO - llamafactory.train.sc.yolo_verifier - Using Apple Silicon MPS for YOLO verification
+07/19/2026 22:25:30 - INFO - llamafactory.train.sc.yolo_verifier - Loading YOLO model=yolov8n.pt device=mps
+07/19/2026 22:25:31 - INFO - llamafactory.train.sc.yolo_verifier - Cached 10 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg
+07/19/2026 22:25:31 - WARNING - llamafactory.train.sc.trainer - YOLO verification failed for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg object=sedan: 'YoloObjectVerifier' object has no attribute '_ismatching_label'
+07/19/2026 22:25:31 - WARNING - llamafactory.train.sc.trainer - YOLO verification failed for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg object=barrier: 'YoloObjectVerifier' object has no attribute '_ismatching_label'
+07/19/2026 22:25:31 - WARNING - llamafactory.train.sc.trainer - YOLO verification failed for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg object=cars: 'YoloObjectVerifier' object has no attribute '_ismatching_label'
 Traceback (most recent call last):
   File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/bin/llamafactory-cli", line 6, in <module>
     sys.exit(main())
   File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/cli.py", line 111, in main
     run_exp()
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/tuner.py", line 51, in run_exp
-    run_sft(model_args, data_args, training_args, finetuning_args, generating_args, callbacks)
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sft/workflow.py", line 48, in run_sft
-    model = load_model(tokenizer, model_args, finetuning_args, training_args.do_train)
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/model/loader.py", line 171, in load_model
-    model = init_adapter(config, model, model_args, finetuning_args, is_trainable)
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/model/adapter.py", line 299, in init_adapter
-    model = _setup_lora_tuning(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/model/adapter.py", line 181, in _setup_lora_tuning
-    model: "LoraModel" = PeftModel.from_pretrained(model, adapter, **init_kwargs)
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/peft/peft_model.py", line 453, in from_pretrained
-    PeftConfig._get_peft_type(
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/peft/config.py", line 211, in _get_peft_type
-    raise ValueError(f"Can't find '{CONFIG_NAME}' at '{model_id}'")
-ValueError: Can't find 'adapter_config.json' at 'saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier'
-(iitj) rutvika@Rutvikas-MacBook-Air sc-captioner-aj % llamafactory-cli train config/qwen2vl_test_lora_sc_docci500_2b_mini_verifier.yaml
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/tuner.py", line 61, in run_exp
+    run_sc(model_args, data_args, training_args, finetuning_args, generating_args, callbacks)
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/workflow.py", line 83, in run_sc
+    train_result = trainer.train(resume_from_checkpoint=training_args.resume_from_checkpoint)
+  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/transformers/trainer.py", line 2052, in train
+    return inner_training_loop(
+  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/transformers/trainer.py", line 2388, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs)
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 842, in training_step
+    loss = self._compute_stage2_loss(
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 706, in _compute_stage2_loss
+    reward, explanation_reports = self.compute_rewards(
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 595, in compute_rewards
+    self._build_explanation_report(
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 413, in _build_explanation_report
+    return build_reward_explanation_report(
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/reward_utils.py", line 209, in build_reward_explanation_report
+    return generate_explanation(
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 185, in generate_explanation
+    explanation_json = generate_explanation_json(
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 91, in generate_explanation_json
+    "verification": {
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 91, in <setcomp>
+    "verification": {
+TypeError: unhashable type: 'dict'
+  0%|                         
