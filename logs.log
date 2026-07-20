@@ -1,32 +1,292 @@
-07/20/2026 10:14:31 - INFO - llamafactory.train.sc.yolo_verifier - Cached 6 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000514251.jpg
-Traceback (most recent call last):
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/bin/llamafactory-cli", line 6, in <module>
-    sys.exit(main())
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/cli.py", line 111, in main
-    run_exp()
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/tuner.py", line 61, in run_exp
-    run_sc(model_args, data_args, training_args, finetuning_args, generating_args, callbacks)
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/workflow.py", line 83, in run_sc
-    train_result = trainer.train(resume_from_checkpoint=training_args.resume_from_checkpoint)
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/transformers/trainer.py", line 2052, in train
-    return inner_training_loop(
-  File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/transformers/trainer.py", line 2388, in _inner_training_loop
-    tr_loss_step = self.training_step(model, inputs)
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 842, in training_step
-    loss = self._compute_stage2_loss(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 706, in _compute_stage2_loss
-    reward, explanation_reports = self.compute_rewards(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 595, in compute_rewards
-    self._build_explanation_report(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/trainer.py", line 413, in _build_explanation_report
-    return build_reward_explanation_report(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/reward_utils.py", line 209, in build_reward_explanation_report
-    return generate_explanation(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 185, in generate_explanation
-    explanation_json = generate_explanation_json(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 22, in generate_explanation_json
-    _validate_caption_inputs(initial_caption, corrected_caption)
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 218, in _validate_caption_inputs
-    raise ValueError("initial_caption must be a non-empty string")
-ValueError: initial_caption must be a non-empty string
- 11%|███████████▌                                                                                            | 1/9 [02:38<21:10, 158.78s/it]
+[INFO|modeling_utils.py:3726] 2026-07-20 10:43:26,434 >> loading weights file model.safetensors from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/model.safetensors
+[INFO|configuration_utils.py:1099] 2026-07-20 10:43:26,468 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+[INFO|modeling_utils.py:4568] 2026-07-20 10:43:26,802 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
+
+[INFO|modeling_utils.py:4576] 2026-07-20 10:43:26,802 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at lizhuang144/flan-t5-base-VG-factual-sg.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:1054] 2026-07-20 10:43:27,280 >> loading configuration file generation_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/generation_config.json
+[INFO|configuration_utils.py:1099] 2026-07-20 10:43:27,281 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
+}
+
+[INFO|trainer.py:2243] 2026-07-20 10:43:28,047 >> ***** Running training *****
+[INFO|trainer.py:2244] 2026-07-20 10:43:28,047 >>   Num examples = 9
+[INFO|trainer.py:2245] 2026-07-20 10:43:28,047 >>   Num Epochs = 1
+[INFO|trainer.py:2246] 2026-07-20 10:43:28,047 >>   Instantaneous batch size per device = 1
+[INFO|trainer.py:2249] 2026-07-20 10:43:28,047 >>   Total train batch size (w. parallel, distributed & accumulation) = 1
+[INFO|trainer.py:2250] 2026-07-20 10:43:28,047 >>   Gradient Accumulation steps = 1
+[INFO|trainer.py:2251] 2026-07-20 10:43:28,047 >>   Total optimization steps = 9
+[INFO|trainer.py:2252] 2026-07-20 10:43:28,048 >>   Number of trainable parameters = 9,232,384
+  0%|                                                                                                                 | 0/9 [00:00<?, ?it/s]07/20/2026 10:45:31 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg
+07/20/2026 10:45:31 - INFO - llamafactory.train.sc.yolo_verifier - Using Apple Silicon MPS for YOLO verification
+07/20/2026 10:45:31 - INFO - llamafactory.train.sc.yolo_verifier - Loading YOLO model=yolov8n.pt device=mps
+07/20/2026 10:45:32 - INFO - llamafactory.train.sc.yolo_verifier - Cached 10 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg
+[WARNING|modeling_utils.py:1279] 2026-07-20 10:45:34,236 >> Could not estimate the number of tokens of the input, floating-point operations will not be computed
+ 11%|███████████▌                                                                                            | 1/9 [02:06<16:49, 126.24s/it]07/20/2026 10:46:10 - WARNING - llamafactory.train.sc.trainer - First-turn caption decoded empty for 1/1 samples. Examples: idx=0 non_pad_tokens=1 raw='<|im_end|>' cleaned=''
+07/20/2026 10:46:15 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000514251.jpg
+07/20/2026 10:46:15 - INFO - llamafactory.train.sc.yolo_verifier - Cached 6 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000514251.jpg
+07/20/2026 10:46:15 - WARNING - llamafactory.train.sc.trainer - Skipping explaination report because initial caption is empty
+{'loss': -14.2706, 'grad_norm': 157.08509826660156, 'learning_rate': 4.809698831278217e-06, 'epoch': 0.22}                                  
+ 22%|███████████████████████▎                                                                                 | 2/9 [02:48<08:59, 77.05s/it]07/20/2026 10:47:04 - WARNING - llamafactory.train.sc.trainer - First-turn caption decoded empty for 1/1 samples. Examples: idx=0 non_pad_tokens=1 raw='<|im_end|>' cleaned=''
+07/20/2026 10:47:09 - WARNING - llamafactory.train.sc.trainer - Skipping explaination report because initial caption is empty
+ 33%|███████████████████████████████████                                                                      | 3/9 [03:44<06:43, 67.23s/it]07/20/2026 10:49:00 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg
+07/20/2026 10:49:00 - INFO - llamafactory.train.sc.yolo_verifier - Cached 3 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg
+{'loss': -77.0027, 'grad_norm': 42.70076370239258, 'learning_rate': 3.4567085809127247e-06, 'epoch': 0.44}                                  
+ 44%|██████████████████████████████████████████████▋                                                          | 4/9 [05:34<06:59, 83.99s/it][INFO|trainer.py:3705] 2026-07-20 10:49:02,141 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4
+[INFO|configuration_utils.py:670] 2026-07-20 10:49:02,153 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
+[WARNING|modeling_rope_utils.py:379] 2026-07-20 10:49:02,153 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+[INFO|configuration_utils.py:739] 2026-07-20 10:49:02,154 >> Model config Qwen2VLConfig {
+  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
+  "architectures": [
+    "Qwen2VLForConditionalGeneration"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 1536,
+  "image_token_id": 151655,
+  "initializer_range": 0.02,
+  "intermediate_size": 8960,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2_vl",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 2,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": {
+    "mrope_section": [
+      16,
+      24,
+      24
+    ],
+    "rope_type": "default",
+    "type": "default"
+  },
+  "rope_theta": 1000000.0,
+  "sliding_window": 32768,
+  "tie_word_embeddings": true,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.45.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "video_token_id": 151656,
+  "vision_config": {
+    "hidden_size": 1536,
+    "in_chans": 3,
+    "model_type": "qwen2_vl",
+    "spatial_patch_size": 14
+  },
+  "vision_end_token_id": 151653,
+  "vision_start_token_id": 151652,
+  "vision_token_id": 151654,
+  "vocab_size": 151936
+}
+
+[INFO|tokenization_utils_base.py:2649] 2026-07-20 10:49:02,262 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2658] 2026-07-20 10:49:02,262 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-07-20 10:49:02,619 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4/preprocessor_config.json
+07/20/2026 10:49:59 - WARNING - llamafactory.train.sc.trainer - First-turn caption decoded empty for 1/1 samples. Examples: idx=0 non_pad_tokens=1 raw='<|im_end|>' cleaned=''
+07/20/2026 10:50:05 - WARNING - llamafactory.train.sc.trainer - Skipping explaination report because initial caption is empty
+ 56%|██████████████████████████████████████████████████████████▎                                              | 5/9 [06:39<05:09, 77.26s/it]07/20/2026 10:51:54 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg
+07/20/2026 10:51:54 - INFO - llamafactory.train.sc.yolo_verifier - Cached 3 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg
+{'loss': -33.8021, 'grad_norm': 72.75414276123047, 'learning_rate': 1.5432914190872757e-06, 'epoch': 0.67}                                  
+ 67%|██████████████████████████████████████████████████████████████████████                                   | 6/9 [08:27<04:23, 87.81s/it]07/20/2026 10:53:44 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000508801.jpg
+07/20/2026 10:53:44 - INFO - llamafactory.train.sc.yolo_verifier - Cached 4 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000508801.jpg
+{'loss': 29.9197, 'grad_norm': 4.603056907653809, 'learning_rate': 1.9030116872178317e-07, 'epoch': 0.89}                                   
+ 89%|████████████████████████████████████████████████████████████████████████████████████████████▍           | 8/9 [12:21<01:44, 104.05s/it][INFO|trainer.py:3705] 2026-07-20 10:55:49,116 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8
+[INFO|configuration_utils.py:670] 2026-07-20 10:55:49,128 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
+[WARNING|modeling_rope_utils.py:379] 2026-07-20 10:55:49,128 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+[INFO|configuration_utils.py:739] 2026-07-20 10:55:49,128 >> Model config Qwen2VLConfig {
+  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
+  "architectures": [
+    "Qwen2VLForConditionalGeneration"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 1536,
+  "image_token_id": 151655,
+  "initializer_range": 0.02,
+  "intermediate_size": 8960,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2_vl",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 2,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": {
+    "mrope_section": [
+      16,
+      24,
+      24
+    ],
+    "rope_type": "default",
+    "type": "default"
+  },
+  "rope_theta": 1000000.0,
+  "sliding_window": 32768,
+  "tie_word_embeddings": true,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.45.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "video_token_id": 151656,
+  "vision_config": {
+    "hidden_size": 1536,
+    "in_chans": 3,
+    "model_type": "qwen2_vl",
+    "spatial_patch_size": 14
+  },
+  "vision_end_token_id": 151653,
+  "vision_start_token_id": 151652,
+  "vision_token_id": 151654,
+  "vocab_size": 151936
+}
+
+[INFO|tokenization_utils_base.py:2649] 2026-07-20 10:55:49,227 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2658] 2026-07-20 10:55:49,227 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-07-20 10:55:49,546 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8/preprocessor_config.json
+07/20/2026 10:56:34 - WARNING - llamafactory.train.sc.trainer - First-turn caption decoded empty for 1/1 samples. Examples: idx=0 non_pad_tokens=1 raw='<|im_end|>' cleaned=''
+07/20/2026 10:56:39 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000375311.jpg
+07/20/2026 10:56:40 - INFO - llamafactory.train.sc.yolo_verifier - Cached 5 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000375311.jpg
+07/20/2026 10:56:40 - WARNING - llamafactory.train.sc.trainer - Skipping explaination report because initial caption is empty
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 9/9 [13:13<00:00, 87.82s/it][INFO|trainer.py:3705] 2026-07-20 10:56:41,245 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9
+[INFO|configuration_utils.py:670] 2026-07-20 10:56:41,257 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
+[WARNING|modeling_rope_utils.py:379] 2026-07-20 10:56:41,257 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+[INFO|configuration_utils.py:739] 2026-07-20 10:56:41,257 >> Model config Qwen2VLConfig {
+  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
+  "architectures": [
+    "Qwen2VLForConditionalGeneration"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 1536,
+  "image_token_id": 151655,
+  "initializer_range": 0.02,
+  "intermediate_size": 8960,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2_vl",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 2,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": {
+    "mrope_section": [
+      16,
+      24,
+      24
+    ],
+    "rope_type": "default",
+    "type": "default"
+  },
+  "rope_theta": 1000000.0,
+  "sliding_window": 32768,
+  "tie_word_embeddings": true,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.45.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "video_token_id": 151656,
+  "vision_config": {
+    "hidden_size": 1536,
+    "in_chans": 3,
+    "model_type": "qwen2_vl",
+    "spatial_patch_size": 14
+  },
+  "vision_end_token_id": 151653,
+  "vision_start_token_id": 151652,
+  "vision_token_id": 151654,
+  "vocab_size": 151936
+}
+
+[INFO|tokenization_utils_base.py:2649] 2026-07-20 10:56:41,362 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2658] 2026-07-20 10:56:41,362 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9/special_tokens_map.json
+[INFO|image_processing_base.py:258] 2026-07-20 10:56:41,673 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9/preprocessor_config.json
+[INFO|trainer.py:2505] 2026-07-20 10:56:41,674 >> 
+
+Training completed. Do not forget to share your model on huggingface.co/models =)
+
+
+{'train_runtime': 793.6263, 'train_samples_per_second': 0.011, 'train_steps_per_second': 0.011, 'train_loss': -37.58563444349501, 'epoch': 1.0}
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 9/9 [13:13<00:00, 88.18s/it]
+[INFO|image_processing_base.py:258] 2026-07-20 10:56:41,675 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/preprocessor_config.json
+[INFO|trainer.py:3705] 2026-07-20 10:56:41,675 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier
+[INFO|configuration_utils.py:670] 2026-07-20 10:56:41,683 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
+[WARNING|modeling_rope_utils.py:379] 2026-07-20 10:56:41,683 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
+[INFO|configuration_utils.py:739] 2026-07-20 10:56:41,683 >> Model config Qwen2VLConfig {
+  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
+  "architectures": [
+    "Qwen2VLForConditionalGeneration"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 151643,
+  "eos_token_id": 151645,
+  "hidden_act": "silu",
+  "hidden_size": 1536,
+  "image_token_id": 151655,
+  "initializer_range": 0.02,
+  "intermediate_size": 8960,
+  "max_position_embeddings": 32768,
+  "max_window_layers": 28,
+  "model_type": "qwen2_vl",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 28,
+  "num_key_value_heads": 2,
+  "rms_norm_eps": 1e-06,
+  "rope_scaling": {
+    "mrope_section": [
+      16,
+      24,
+      24
+    ],
+    "rope_type": "default",
+    "type": "default"
+  },
+  "rope_theta": 1000000.0,
+  "sliding_window": 32768,
+  "tie_word_embeddings": true,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.45.0",
+  "use_cache": true,
+  "use_sliding_window": false,
+  "video_token_id": 151656,
+  "vision_config": {
+    "hidden_size": 1536,
+    "in_chans": 3,
+    "model_type": "qwen2_vl",
+    "spatial_patch_size": 14
+  },
+  "vision_end_token_id": 151653,
+  "vision_start_token_id": 151652,
+  "vision_token_id": 151654,
+  "vocab_size": 151936
+}
+
+[INFO|tokenization_utils_base.py:2649] 2026-07-20 10:56:41,774 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2658] 2026-07-20 10:56:41,774 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/special_tokens_map.json
+***** train metrics *****
+  epoch                    =        1.0
+  total_flos               =        0GF
+  train_loss               =   -37.5856
+  train_runtime            = 0:13:13.62
+  train_samples_per_second =      0.011
+  train_steps_per_second   =      0.011
+Figure saved at: saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/training_loss.png
+07/20/2026 10:56:41 - WARNING - llamafactory.extras.ploting - No metric eval_loss to plot.
+07/20/2026 10:56:41 - WARNING - llamafactory.extras.ploting - No metric rewards/accuracies to plot.
+[INFO|modelcard.py:449] 2026-07-20 10:56:41,902 >> Dropping the following result as it does not have all the necessary fields:
+{'task': {'name': 'Causal Language Modeling', 'type': 'text-generation'}}
