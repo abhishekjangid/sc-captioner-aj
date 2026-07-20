@@ -1,10 +1,4 @@
-7/19/2026 22:25:30 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg
-07/19/2026 22:25:30 - INFO - llamafactory.train.sc.yolo_verifier - Using Apple Silicon MPS for YOLO verification
-07/19/2026 22:25:30 - INFO - llamafactory.train.sc.yolo_verifier - Loading YOLO model=yolov8n.pt device=mps
-07/19/2026 22:25:31 - INFO - llamafactory.train.sc.yolo_verifier - Cached 10 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg
-07/19/2026 22:25:31 - WARNING - llamafactory.train.sc.trainer - YOLO verification failed for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg object=sedan: 'YoloObjectVerifier' object has no attribute '_ismatching_label'
-07/19/2026 22:25:31 - WARNING - llamafactory.train.sc.trainer - YOLO verification failed for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg object=barrier: 'YoloObjectVerifier' object has no attribute '_ismatching_label'
-07/19/2026 22:25:31 - WARNING - llamafactory.train.sc.trainer - YOLO verification failed for image=/Users/rutvika/source_code/dataset/coco/train2017/000000334121.jpg object=cars: 'YoloObjectVerifier' object has no attribute '_ismatching_label'
+07/20/2026 10:14:31 - INFO - llamafactory.train.sc.yolo_verifier - Cached 6 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000514251.jpg
 Traceback (most recent call last):
   File "/opt/homebrew/Caskroom/miniforge/base/envs/iitj/bin/llamafactory-cli", line 6, in <module>
     sys.exit(main())
@@ -30,9 +24,9 @@ Traceback (most recent call last):
     return generate_explanation(
   File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 185, in generate_explanation
     explanation_json = generate_explanation_json(
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 91, in generate_explanation_json
-    "verification": {
-  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 91, in <setcomp>
-    "verification": {
-TypeError: unhashable type: 'dict'
-  0%|                         
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 22, in generate_explanation_json
+    _validate_caption_inputs(initial_caption, corrected_caption)
+  File "/Users/rutvika/source_code/sc-captioner-aj/src/llamafactory/train/sc/explanation_utils.py", line 218, in _validate_caption_inputs
+    raise ValueError("initial_caption must be a non-empty string")
+ValueError: initial_caption must be a non-empty string
+ 11%|███████████▌                                                                                            | 1/9 [02:38<21:10, 158.78s/it]
