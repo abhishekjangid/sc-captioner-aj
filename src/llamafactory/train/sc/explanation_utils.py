@@ -17,10 +17,6 @@ def generate_explanation_json(
     removed_objects_missing_from_reference: Optional[Sequence[str]] = None,
     verification_penalty_reduction: float = 1.0,
     verified_removal_reward_reduction: float = 1.0,
-    added_attributes: Optional[Mapping[str, Sequence[str]]] = None,
-    removed_attributes: Optional[Mapping[str, Sequence[str]]] = None,
-    added_relations: Optional[Sequence[Any]] = None,
-    removed_relations: Optional[Sequence[Any]] = None
 ) -> ExplanationJson:
     """Build a structured explanation payload for SC-Captioner corrections."""
     _validate_caption_inputs(initial_caption, corrected_caption)
@@ -45,22 +41,16 @@ def generate_explanation_json(
     verified_removed_objects = [
         object_name
         for object_name in normalized_removed_missing
-        if not normalized_yolo.get(object_name, {}).get("verified", False)
+        if normalized_yolo.get(object_name, {}).get("verified", False)
     ]
     unverified_removed_objects = [
         object_name for object_name in normalized_removed_missing if object_name not in verified_removed_objects
     ]
-    hallucinations_removed = list(unverified_removed_objects)
     confidence_score = _compute_confidence_score(
         verified_added_objects=verified_added_objects,
-        unverified_removed_objects=unverified_removed_objects,
+        verified_removed_objects=verified_removed_objects,
         added_objects_missing_from_reference=normalized_added_missing,
         removed_objects_missing_from_reference=normalized_removed_missing,
-    )
-    verification_results = _build_verification_results(
-        normalized_yolo, 
-        normalized_added_missing, 
-        normalized_removed_missing
     )
     added_object_decisions = _build_added_object_decisions(
         normalized_added,
@@ -82,8 +72,8 @@ def generate_explanation_json(
         removed_objects=normalized_removed,
         verified_added_objects=verified_added_objects,
         verified_removed_objects=verified_removed_objects,
+        unverified_added_objects=unverified_added_objects,
         unverified_removed_objects=unverified_removed_objects,
-        hallucinations_removed=hallucinations_removed,
     )
 
     explanation = {
@@ -93,12 +83,11 @@ def generate_explanation_json(
             "added_objects": normalized_added,
             "removed_objects": normalized_removed,
         },
-        "verifications": {
+        "verification": {
             "verified_added_objects": verified_added_objects,
             "unverified_added_objects": unverified_added_objects,
             "verified_removed_objects": verified_removed_objects,
             "unverified_removed_objects": unverified_removed_objects,
-            "verification_results": verification_results,
         },
         "reward_decisions": {
             "added_object_decisions": added_object_decisions,
@@ -120,10 +109,6 @@ def generate_explanation_text(
     removed_objects_missing_from_reference: Optional[Sequence[str]] = None,
     verification_penalty_reduction: float = 1.0,
     verified_removal_reward_reduction: float = 1.0,
-    added_attributes: Optional[Mapping[str, Sequence[str]]] = None,
-    removed_attributes: Optional[Mapping[str, Sequence[str]]] = None,
-    added_relations: Optional[Sequence[Any]] = None,
-    removed_relations: Optional[Sequence[Any]] = None,
 ) -> str:
     """Build a human-readable explanation for SC-Captioner corrections."""
     explanation = generate_explanation_json(
@@ -136,22 +121,16 @@ def generate_explanation_text(
         removed_objects_missing_from_reference=removed_objects_missing_from_reference,
         verification_penalty_reduction=verification_penalty_reduction,
         verified_removal_reward_reduction=verified_removal_reward_reduction,
-        added_attributes=added_attributes,
-        removed_attributes=removed_attributes,
-        added_relations=added_relations,
-        removed_relations=removed_relations,
     )
 
     normalized_yolo = _normalize_yolo_results(yolo_verification_results)
-    changes = _extract_change_section(explanation)
-    verification = _extract_verification_section(explanation, changes)
     verification_fragments = []
-    for object_name in verification["verified_added_objects"]:
+    for object_name in explanation["verification"]["verified_added_objects"]:
         confidence = normalized_yolo.get(object_name, {}).get("confidence", 0.0)
         verification_fragments.append(f"{object_name} ({float(confidence):.2f})")
 
     removed_verification_fragments = []
-    for object_name in verification["verified_removed_objects"]:
+    for object_name in explanation["verification"]["verified_removed_objects"]:
         confidence = normalized_yolo.get(object_name, {}).get("confidence", 0.0)
         removed_verification_fragments.append(f"{object_name} ({float(confidence):.2f})")
 
@@ -160,14 +139,13 @@ def generate_explanation_text(
         "SC-Captioner Explanation",
         f"Initial caption: {initial_caption.strip()}",
         f"Corrected caption: {corrected_caption.strip()}",
-        "Added objects: {}".format(_format_object_list(changes["added_objects"])),
-        "Removed objects: {}".format(_format_object_list(changes["removed_objects"])),
+        "Added objects: {}".format(_format_object_list(explanation["changes"]["added_objects"])),
+        "Removed objects: {}".format(_format_object_list(explanation["changes"]["removed_objects"])),
         "YOLO-verified added objects: {}".format(_format_object_list(verification_fragments)),
-        "YOLO-unverified added objects: {}".format(_format_object_list(verification["unverified_added_objects"])),
+        "YOLO-unverified added objects: {}".format(_format_object_list(explanation["verification"]["unverified_added_objects"])),
         "YOLO-verified removed objects: {}".format(_format_object_list(removed_verification_fragments)),
-        "YOLO-unverified removed objects: {}".format(_format_object_list(verification["unverified_removed_objects"])),
-        "Hallucinations removed: {}".format(_format_object_list(verification["unverified_removed_objects"])),
-        "Confidence score: {: .2f}".format(float(explanation["confidence_score"])),
+        "YOLO-unverified removed objects: {}".format(_format_object_list(explanation["verification"]["unverified_removed_objects"])),
+        "Confidence score: {:.2f}".format(float(explanation["confidence_score"])),
         f"Summary: {explanation['summary']}",
     ]
     human_readable = "\n".join(lines)
@@ -184,13 +162,9 @@ def generate_explanation(
     removed_objects_missing_from_reference: Optional[Sequence[str]] = None,
     verification_penalty_reduction: float = 1.0,
     verified_removal_reward_reduction: float = 1.0,
-    added_attributes: Optional[Mapping[str, Sequence[str]]] = None,
-    removed_attributes: Optional[Mapping[str, Sequence[str]]] = None,
-    added_relations: Optional[Sequence[Any]] = None,
-    removed_relations: Optional[Sequence[Any]] = None,
-) -> Dict[str, Union[ExplanationJson, str]]:
-    """Return both JSON and human-readable explanation formats."""
-    explanation_json = generate_explanation_json(
+) -> ExplanationJson:
+    """Return the structured explaination report used by SC-captioner."""
+    return generate_explanation_json(
         initial_caption=initial_caption,
         corrected_caption=corrected_caption,
         added_objects=added_objects,
@@ -200,30 +174,7 @@ def generate_explanation(
         removed_objects_missing_from_reference=removed_objects_missing_from_reference,
         verification_penalty_reduction=verification_penalty_reduction,
         verified_removal_reward_reduction=verified_removal_reward_reduction,
-        added_attributes=added_attributes,
-        removed_attributes=removed_attributes,
-        added_relations=added_relations,
-        removed_relations=removed_relations,
     )
-    explanation_text = generate_explanation_text(
-        initial_caption=initial_caption,
-        corrected_caption=corrected_caption,
-        added_objects=added_objects,
-        removed_objects=removed_objects,
-        yolo_verification_results=yolo_verification_results,
-        added_objects_missing_from_reference=added_objects_missing_from_reference,
-        removed_objects_missing_from_reference=removed_objects_missing_from_reference,
-        verification_penalty_reduction=verification_penalty_reduction,
-        verified_removal_reward_reduction=verified_removal_reward_reduction,
-        added_attributes=added_attributes,
-        removed_attributes=removed_attributes,
-        added_relations=added_relations,
-        removed_relations=removed_relations,
-    )
-    return {
-        "json": explanation_json,
-        "human_readable": explanation_text,
-    }
 
 def explanation_to_json_string(explanation: Mapping[str, Any], indent: int = 2) -> str:
     """Serialize an explanation payload to a JSON string."""
@@ -293,119 +244,6 @@ def _normalize_yolo_results(
 
     return normalized
 
-def _normalize_attribute_map(attributes: Optional[Mapping[str, Sequence[str]]]) -> Dict[str, List[str]]:
-    if attributes is None:
-        return {}
-    if not isinstance(attributes, Mapping):
-        raise TypeError("attributes must be a mapping of object names to attribute sequences")
-
-    normalized: Dict[str, List[str]] = {}
-    for object_name, values in attributes.items():
-        normalized_name = _normalize_object_list([object_name])
-        if not normalized_name:
-            continue
-        normalized[normalized_name[0]] = _normalize_object_list(values)
-    return normalized
-
-def _normalize_relation_list(relations: Optional[Sequence[Any]]) -> List[str]:
-    if relations is None:
-        return []
-    if not isinstance(relations, (list, tuple, set)):
-        raise TypeError("relations must be a sequence")
-
-    normalized: List[str] = []
-    seen = set()
-    for relation in relations:
-        if isinstance(relation, str):
-            relation_text = relation.strip().lower()
-        elif isinstance(relation, (list, tuple)) and len(relation) >= 3:
-            relation_text = " ".join(str(part).strip().lower() for part in relation[:3] if str(part).strip())
-        else:
-            relation_text = str(relation).strip().lower()
-
-        if not relation_text or relation_text in seen:
-            continue
-        seen.add(relation_text)
-        normalized.append(relation_text)
-    return normalized
-
-def _build_verification_results(
-    normalized_yolo: Mapping[str, YoloResult],
-    added_objects: Sequence[str],
-    removed_objects: Sequence[str],
-) -> List[Dict[str, Any]]:
-    verification_results: List[Dict[str, Any]] = []
-    for object_name in added_objects:
-        result = normalized_yolo.get(object_name, {})
-        verification_results.append(
-            {
-                "object_name": object_name,
-                "change_type": "added",
-                "verified": bool(result.get("verified", False)),
-                "confidence": float(result.get("confidence", 0.0)),
-                "matched_label": result.get("matched_label"),
-            }
-        )
-    for object_name in removed_objects:
-        result = normalized_yolo.get(object_name, {})
-        verification_results.append(
-            {
-                "object_name": object_name,
-                "change_type": "removed",
-                "verified": bool(result.get("verified", False)),
-                "confidence": float(result.get("confidence", 0.0)),
-                "matched_label": result.get("matched_label"),
-            }
-        )
-    return verification_results
-
-def _extract_change_section(explanation: Mapping[str, Any]) -> Dict[str, List[str]]:
-    changes = explanation.get("changes")
-    if isinstance(changes, Mapping):
-        added_objects = _normalize_object_list(changes.get("added_objects", []))
-        removed_objects = _normalize_object_list(changes.get("removed_objects", []))
-        return {
-            "added_objects": added_objects,
-            "removed_objects": removed_objects,
-        }
-
-    return {
-        "added_objects": _normalize_object_list(explanation.get("added_objects", [])),
-        "removed_objects": _normalize_object_list(explanation.get("removed_objects", [])),
-    }
-
-def _extract_verification_section(
-    explanation: Mapping[str, Any],
-    changes: Mapping[str, Sequence[str]],
-) -> Dict[str, Any]:
-    verification = explanation.get("verification")
-    if isinstance(verification, Mapping):
-        return {
-            "verified_added_objects": _normalize_object_list(verification.get("verified_added_objects", [])),
-            "unverified_added_objects": _normalize_object_list(verification.get("unverified_added_objects", [])),
-            "verified_removed_objects": _normalize_object_list(verification.get("verified_removed_objects", [])),
-            "unverified_removed_objects": _normalize_object_list(verification.get("unverified_removed_objects", [])),
-            "verification_results": list(verification.get("verification_results", [])),
-        }
-
-    verified_added_objects = _normalize_object_list(explanation.get("verified_corrections", []))
-    removed_objects = _normalize_object_list(changes.get("removed_objects", []))
-    unverified_removed_objects = _normalize_object_list(explanation.get("hallucinations_removed", []))
-    verified_removed_objects = [
-        object_name for object_name in removed_objects if object_name not in set(unverified_removed_objects)
-    ]
-    unverified_added_objects = [
-        object_name for object_name in _normalize_object_list(changes.get("added_objects", []))
-        if object_name not in set(verified_added_objects)
-    ]
-    return {
-        "verified_added_objects": verified_added_objects,
-        "unverified_added_objects": unverified_added_objects,
-        "verified_removed_objects": verified_removed_objects,
-        "unverified_removed_objects": unverified_removed_objects,
-        "verification_results": [],
-    }
-
 def _sequence_to_yolo_items(
     yolo_verification_results: Sequence[Mapping[str, Any]]
 ) -> List[Tuple[str, Mapping[str, Any]]]:
@@ -429,8 +267,8 @@ def _build_summary(
     removed_objects: Sequence[str],
     verified_added_objects: Sequence[str],
     verified_removed_objects: Sequence[str],
+    unverified_added_objects: Sequence[str],
     unverified_removed_objects: Sequence[str],
-    hallucinations_removed: Sequence[str],
 ) -> str:
     summary_parts = [
         "The caption was revised to better match the image content.",
@@ -449,20 +287,17 @@ def _build_summary(
             )
         )
 
-    if hallucinations_removed:
+    if unverified_removed_objects:
         summary_parts.append(
-            "YOLO did not detect the removed objects {}, so their removal reward was kept.".format(
-                _format_object_list(hallucinations_removed)
+            "YOLO did not detect the removed objects {}, so their removal reward was applied.".format(
+                _format_object_list(unverified_removed_objects)
             )
         )
 
-    unresolved_additions = [
-        object_name for object_name in added_objects if object_name not in verified_added_objects
-    ]
-    if unresolved_additions:
+    if unverified_added_objects:
         summary_parts.append(
             "The added objects {} were not verified by YOLO and should be reviewed if stricter validation is required.".format(
-                _format_object_list(unresolved_additions)
+                _format_object_list(unverified_added_objects)
             )
         )
 
@@ -473,7 +308,7 @@ def _build_summary(
 
 def _compute_confidence_score(
     verified_added_objects: Sequence[str],
-    unverified_removed_objects: Sequence[str],
+    verified_removed_objects: Sequence[str],
     added_objects_missing_from_reference: Sequence[str],
     removed_objects_missing_from_reference: Sequence[str],
 ) -> float:
@@ -482,7 +317,7 @@ def _compute_confidence_score(
         return 0.0
 
     confidence_score = (
-        len(verified_added_objects) + len(unverified_removed_objects)
+        len(verified_added_objects) + len(verified_removed_objects)
     ) / float(total_verification_candidates)
     return round(confidence_score, 4)
 
@@ -559,22 +394,3 @@ def _build_removed_object_decisions(
             }
         )
     return decisions
-
-def _flatten_attribute_map(values: Mapping[str, Sequence[str]]) -> List[str]:
-    flattened: List[str] = []
-    for key, items in values.items():
-        for item in items:
-            flattened.append(f"{key}: {item}")
-    return flattened
-
-def _format_object_list(objects: Iterable[Any]) -> str:
-    items = [str(object_name) for object_name in objects if str(object_name)]
-    return ", ".join(items) if items else "none"
-
-def _format_change_map(values: Mapping[str, Sequence[str]]) -> str:
-    if not values:
-        return "none"
-    return "; ".join(f"{key}: {', '.join(item for item in items) if items else 'none'}" for key, items in values.items())
-
-def _format_relation_list(relations: Sequence[str]) -> str:
-    return ", ".join(relations) if relations else "none"

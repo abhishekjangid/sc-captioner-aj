@@ -348,16 +348,12 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
     )
 
     verification_enabled: bool = field(
-    default=True,
+    default=False,
     metadata={"help": "Whether or not to enable YOLO-based object verification in SC training."},
     )
     verification_model: str = field(
         default="yolov8n.pt",
         metadata={"help": "The YOLO model checkpoint used for verification-aware SC training."},
-    )
-    verification_allow_download: bool = field(
-        default=False,
-        metadata={"help": "Whether Ultralytics is allowed to download YOLO weights if they are not available locally."},
     )
     verification_threshold: float = field(
         default=0.40,
@@ -376,11 +372,11 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         },
     )
     explainability_enabled: bool = field(
-        default=True,
+        default=False,
         metadata={"help": "Whether or not to generate explanation reports for SC corrections and predictions."},
     )
     save_explanation_report: bool = field(
-        default=True,
+        default=False,
         metadata={"help": "Whether or not to write explanation reports into generated prediction outputs."},
     )
 

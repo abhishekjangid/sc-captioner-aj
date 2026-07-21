@@ -235,10 +235,6 @@ def build_reward_explanation_report(
     removed_objects_missing_from_reference=None,
     verification_penalty_reduction=1.0,
     verified_removal_reward_reduction=1.0,
-    added_attributes=None,
-    removed_attributes=None,
-    added_relations=None,
-    removed_relations=None
 ):
     """Build a structured explanation payload for SC-Captioner reward updates."""
     return generate_explanation(
@@ -251,8 +247,4 @@ def build_reward_explanation_report(
         removed_objects_missing_from_reference=removed_objects_missing_from_reference,
         verification_penalty_reduction=verification_penalty_reduction,
         verified_removal_reward_reduction=verified_removal_reward_reduction,
-        added_attributes=added_attributes,
-        removed_attributes=removed_attributes,
-        added_relations=added_relations,
-        removed_relations=removed_relations
     )

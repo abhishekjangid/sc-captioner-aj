@@ -140,7 +140,6 @@ class CustomSCTrainer(OnlineDPOTrainer):
             YoloObjectVerifier(
                 model_name=finetuning_args.verification_model,
                 confidence_threshold=finetuning_args.verification_threshold,
-                allow_download=finetuning_args.verification_allow_download,
             )
             if self.verification_enabled
             else None
@@ -429,10 +428,6 @@ class CustomSCTrainer(OnlineDPOTrainer):
         image_path: Optional[str],
         added_objects_missing_from_reference: Optional[List[str]] = None,
         removed_objects_missing_from_reference: Optional[List[str]] = None,
-        added_attributes: Optional[Dict[str, Any]] = None,
-        removed_attributes: Optional[Dict[str, Any]] = None,
-        added_relations: Optional[List[Any]] = None,
-        removed_relations: Optional[List[Any]] = None,
     ) -> Optional[Dict[str, Any]]:
         if not self.explainability_enabled:
             return None
@@ -462,10 +457,6 @@ class CustomSCTrainer(OnlineDPOTrainer):
                 removed_objects_missing_from_reference=removed_objects_missing_from_reference,
                 verification_penalty_reduction=self.verification_penalty_reduction,
                 verified_removal_reward_reduction=self.verified_removal_reward_reduction,
-                added_attributes=added_attributes,
-                removed_attributes=removed_attributes,
-                added_relations=added_relations,
-                removed_relations=removed_relations
             )
         except Exception as exc:
             LOGGER.warning("Failed to build SC explanation report: %s", exc)
@@ -482,7 +473,10 @@ class CustomSCTrainer(OnlineDPOTrainer):
             return None
         
         try:
-            removed_objects, added_objects, removed_relations, added_relations, removed_attributes, added_attributes = self._get_revision_for_captions(initial_caption, corrected_caption)
+            removed_objects, added_objects, _, _, _, _ = self._get_revision_for_captions(
+                initial_caption, 
+                corrected_caption,
+            )
             added_objects_missing_from_reference = list(added_objects)
             removed_objects_missing_from_reference = list(removed_objects)
             if isinstance(reference_caption, str) and reference_caption.strip():
@@ -504,10 +498,6 @@ class CustomSCTrainer(OnlineDPOTrainer):
                 image_path=image_path,
                 added_objects_missing_from_reference=added_objects_missing_from_reference,
                 removed_objects_missing_from_reference=removed_objects_missing_from_reference,
-                added_attributes=added_attributes,
-                removed_attributes=removed_attributes,
-                added_relations=list(added_relations),
-                removed_relations=list(removed_relations),
             )
         except Exception as exc:
             LOGGER.warning("Failed to build SC explanation report for prediction output: %s", exc)
@@ -714,10 +704,6 @@ class CustomSCTrainer(OnlineDPOTrainer):
                     image_path=image_path,
                     added_objects_missing_from_reference=low_similarity_objects,
                     removed_objects_missing_from_reference=low_similarity_removed_objects,
-                    added_attributes=added_attributes_ref,
-                    removed_attributes=removed_attributes_ref,
-                    added_relations=list(added_relations_ref),
-                    removed_relations=list(removed_relations_ref),
                 )
             )
 

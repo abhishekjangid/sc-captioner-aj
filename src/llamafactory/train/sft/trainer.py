@@ -17,9 +17,6 @@
 
 import json
 import os
-import contextlib
-import io
-import collections
 from types import MethodType
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
@@ -32,7 +29,6 @@ from ...extras.constants import IGNORE_INDEX
 from ...extras.logging import get_logger
 from ..callbacks import PissaConvertCallback, SaveProcessorCallback
 from ..trainer_utils import create_custom_optimizer, create_custom_scheduler
-from ..sc.yolo_verifier import YoloObjectVerifier
 from torch.utils.data import DataLoader
 from transformers.integrations.deepspeed import deepspeed_init, deepspeed_load_checkpoint, is_deepspeed_available
 from transformers.trainer_utils import EvalLoopOutput, EvalPrediction, has_length, denumpify_detensorize
@@ -50,22 +46,6 @@ if TYPE_CHECKING:
 
 
 logger = get_logger(__name__)
-
-def _make_json_serializable(value: Any) -> Any:
-    if isinstance(value, dict):
-        return {str(key): _make_json_serializable(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_make_json_serializable(item) for item in value]
-    if isinstance(value, (set, frozenset)):
-        return [_make_json_serializable(item) for item in sorted(value, key=str)]
-    if isinstance(value, collections.defaultdict):
-        return {str(key): _make_json_serializable(item) for key, item in dict(value).items()}
-    if hasattr(value, "tolist"):
-        try:
-            return value.tolist()
-        except Exception:
-            pass
-    return value
 
 class CustomSeq2SeqTrainer(Seq2SeqTrainer):
     r"""
@@ -205,25 +185,6 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
         
         self.correction_instruction = correction_instruction
         self.model_type = model_type
-        self.verification_enabled = finetuning_args.verification_enabled
-        self.explainability_enabled = finetuning_args.explainability_enabled
-        self.save_explaination_report = finetuning_args.save_explanation_report
-        self.yolo_verifier = (
-            YoloObjectVerifier(
-                model_name=finetuning_args.verification_model,
-                confidence_threshold=finetuning_args.verification_threshold,
-                allow_download=finetuning_args.verification_allow_download,
-            )
-            if self.verification_enabled
-            else None
-        )
-        self.capture = None
-        self.parser = None
-        self._sent_tokenize = None
-        self._merge_sentence_results = None
-        self._get_revision = None
-        self._build_reward_explanation_report = None
-        self._explanation_runtime_failed = False
 
     @override
     def create_optimizer(self) -> "torch.optim.Optimizer":
@@ -298,155 +259,7 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
         else:
             return {"input_ids": second_attempt_input_ids, "attention_mask": second_attempt_attention_mask, "labels": prompts["labels"], "pixel_values": prompts["pixel_values"], "image_grid_thw": prompts["image_grid_thw"]}
         
-
-    @staticmethod
-    def _resolve_image_path(image_source: Any) -> Optional[str]:
-        if isinstance(image_source, str):
-            return image_source
-
-        if isinstance(image_source, dict):
-            image_path = image_source.get("path")
-            if isinstance(image_path, str):
-                return image_path
-
-        return None
-
-    def _verify_object_with_yolo(self, image_path: Optional[str], object_name: str) -> Dict[str, Any]:
-        if not self.verification_enabled or self.yolo_verifier is None or not image_path:
-            return {"verified": False, "confidence": 0.0, "matched_label": None}
-
-        try:
-            verification = self.yolo_verifier.verify(image_path=image_path, object_name=object_name)
-        except Exception as exc:
-            logger.warning(
-                "YOLO verification failed for image=%s object=%s: %s",
-                image_path,
-                object_name,
-                exc,
-            )
-            return {"verified": False, "confidence": 0.0, "matched_label": None}
-
-        return {
-            "verified": bool(verification.get("verified", False)),
-            "confidence": float(verification.get("confidence", 0.0)),
-            "matched_label": verification.get("matched_label")
-        }
-
-    def _build_yolo_verification_results(
-        self,
-        image_path: Optional[str],
-        object_names: List[str],
-    ) -> Dict[str, Dict[str, Any]]:
-        verification_results: Dict[str, Dict[str, Any]] = {}
-        for object_name in object_names:
-            normalized_name = object_name.strip().lower()
-            if not normalized_name or normalized_name in verification_results:
-                continue
-            
-            verification_results[normalized_name] = self._verify_object_with_yolo(image_path, normalized_name)
-
-        return verification_results
-
-    def _ensure_explanation_runtime(self) -> bool:
-        if not self.explainability_enabled:
-            return False
-
-        if self._explanation_runtime_failed:
-            return False
-
-        if self.capture is not None and self.parser is not None:
-            return True
-
-        try:
-            from sentence_transformers import SentenceTransformer
-            from factual_scene_graph.parser.scene_graph_parser import SceneGraphParser
-            from nltk.tokenize import sent_tokenize
-
-            from ..sc.capture import CAPTURE
-            from ..sc.reward_utils import build_reward_explanation_report, get_revision, merge_sentence_results
-        except Exception as exc:
-            logger.warning("Explainability runtime could not be initialized: %s", exc)
-            self._explanation_runtime_failed = True
-            return False
-
-        text_encoder = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
-        self.parser = SceneGraphParser("lizhuang144/flan-t5-base-VG-factual-sg", device=text_encoder.device)
-        self.capture = CAPTURE()
-        self.capture.text_encoder = text_encoder
-        self._sent_tokenize = sent_tokenize
-        self._merge_sentence_results = merge_sentence_results
-        self._get_revision = get_revision
-        self._build_reward_explanation_report = build_reward_explanation_report
-        return True
-
-    def _parse_scene_graph(self, text: str):
-        sentences = self._sent_tokenize(text)
-        with torch.no_grad():
-            with io.StringIO() as redirected_output:
-                with contextlib.redirect_stdout(redirected_output), contextlib.redirect_stderr(redirected_output):
-                    graph_obj = self.parser.parse(
-                        sentences,
-                        beam_size=5,
-                        return_text=False,
-                        max_output_len=128,
-                        max_input_len=512,
-                    )
-
-        _, _, _, relations_original, attributes_original, objects_original, _ = self._merge_sentence_results(
-            graph_obj,
-            self.capture.text_processor,
-        )
-        return objects_original, attributes_original, relations_original
-
-    def _get_revision_for_captions(self, initial_caption: str, corrected_caption: str):
-        initial_objects, initial_attributes, initial_relations = self._parse_scene_graph(initial_caption)
-        corrected_objects, corrected_attributes, corrected_relations = self._parse_scene_graph(corrected_caption)
-        return self._get_revision(
-            initial_objects,
-            corrected_objects,
-            initial_attributes,
-            corrected_attributes,
-            initial_relations,
-            corrected_relations,
-            initial_caption,
-            corrected_caption,
-            self.capture.text_encoder,
-            stop_words=True,
-        )
-
-    def _build_prediction_explanation_report(
-        self,
-        initial_caption: Optional[str],
-        corrected_caption: Optional[str],
-        image_path: Optional[str],
-    ) -> Optional[Dict[str, Any]]:
-        if not self.explainability_enabled or not initial_caption or not corrected_caption:
-            return None
-
-        if not self._ensure_explanation_runtime():
-            return None
-
-        try:
-            removed_objects, added_objects, removed_relations, added_relations, removed_attributes, added_attributes = self._get_revision_for_captions(initial_caption, corrected_caption)
-            yolo_verification_results = self._build_yolo_verification_results(
-                image_path,
-                list(added_objects) + list(removed_objects),
-            )
-            return self._build_reward_explanation_report(
-                initial_caption=initial_caption,
-                corrected_caption=corrected_caption,
-                added_objects=list(added_objects),
-                removed_objects=list(removed_objects),
-                yolo_verification_results=yolo_verification_results,
-                added_attributes=added_attributes,
-                removed_attributes=removed_attributes,
-                added_relations=list(added_relations),
-                removed_relations=list(removed_relations),
-            )
-        except Exception as exc:
-            logger.warning("Failed to build explanation report for prediction output: %s", exc)
-            return None    
-        
+     
     @override
     def evaluation_loop(
         self,
@@ -719,40 +532,24 @@ class MultiturnSeq2SeqTrainer(Seq2SeqTrainer):
         decoded_labels = self.tokenizer.batch_decode(labels, skip_special_tokens=True)
         decoded_preds = self.tokenizer.batch_decode(preds, skip_special_tokens=True)
         decoded_preds_turn2 = self.tokenizer.batch_decode(preds_turn2, skip_special_tokens=True)
-        images = dataset["images"] if "images" in dataset.column_names else [None] * len(decoded_preds)
 
         with open(output_prediction_file, "w", encoding="utf-8") as writer:
             res: List[str] = []
-            for text, label, pred, pred_turn2, image_sources in zip(
+            for text, label, pred, pred_turn2 in zip(
                 decoded_inputs,
                 decoded_labels,
                 decoded_preds,
                 decoded_preds_turn2,
-                images,
             ):
-                image_path = None
-                for image_source in image_sources or []:
-                    image_path = self._resolve_image_path(image_source)
-                    if image_path is not None:
-                        break
-
-                explanation_report = self._build_prediction_explanation_report(
-                    initial_caption=pred,
-                    corrected_caption=pred_turn2,
-                    image_path=image_path,
-                )
 
                 res.append(
                     json.dumps(
-                        _make_json_serializable({
+                        {
                             "prompt": text,
                             "label": label,
                             "predict": pred,
                             "predict_turn2": pred_turn2,
-                            "rejected_text": pred,
-                            "image_path": image_path,
-                            "explanation_report": explanation_report,
-                        }),
+                        },
                         ensure_ascii=False,
                     )
                 )
