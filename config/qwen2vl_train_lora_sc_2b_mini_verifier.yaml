@@ -26,15 +26,6 @@ save_steps: 4
 plot_loss: true
 overwrite_output_dir: true
 
-#### Verifier config
-verification_enabled: false
-verification_model: yolov8n.pt
-verification_threshold: 0.40
-verification_penalty_reduction: 1.0
-verified_removal_reward_reduction: 1.0
-explainability_enabled: false
-save_explanation_report: false
-
 ### train
 per_device_train_batch_size: 1
 gradient_accumulation_steps: 1
@@ -50,3 +41,12 @@ ddp_timeout: 180000000
 val_size: 0.0
 per_device_eval_batch_size: 1
 eval_strategy: "no"
+
+#### Verifier config
+verification_enabled: true
+verification_model: yolov8n.pt
+verification_threshold: 0.40
+verification_penalty_reduction: 1.0
+verified_removal_reward_reduction: 1.0
+explainability_enabled: true
+save_explanation_report: true
