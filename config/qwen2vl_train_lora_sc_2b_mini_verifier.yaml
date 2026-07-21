@@ -27,13 +27,13 @@ plot_loss: true
 overwrite_output_dir: true
 
 #### Verifier config
-verification_enabled: true
-explainability_enabled: true
-save_explanation_report: true
-verification_allow_download: true
+verification_enabled: false
 verification_model: yolov8n.pt
 verification_threshold: 0.40
 verification_penalty_reduction: 1.0
+verified_removal_reward_reduction: 1.0
+explainability_enabled: false
+save_explanation_report: false
 
 ### train
 per_device_train_batch_size: 1

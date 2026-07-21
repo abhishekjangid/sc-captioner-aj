@@ -24,6 +24,8 @@ self_correction: True
 
 #### Verifier config
 verification_enabled: true
+explainability_enabled: true
+save_explanation_report: true
+verification_allow_download: false
 verification_model: yolov8n.pt
 verification_threshold: 0.40
-explainability_enabled: true

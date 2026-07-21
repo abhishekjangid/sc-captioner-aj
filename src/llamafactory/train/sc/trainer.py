@@ -135,6 +135,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
         self.explainability_enabled = finetuning_args.explainability_enabled
         self.save_explanation_report = finetuning_args.save_explanation_report
         self.verification_penalty_reduction = finetuning_args.verification_penalty_reduction
+        self.verified_removal_reward_reduction = finetuning_args.verified_removal_reward_reduction
         self.yolo_verifier = (
             YoloObjectVerifier(
                 model_name=finetuning_args.verification_model,
@@ -361,6 +362,34 @@ class CustomSCTrainer(OnlineDPOTrainer):
             verification_results[normalized_name] = self._verify_object_with_yolo(image_path, normalized_name)
             
         return verification_results
+    
+    def _objects_missing_from_reference(
+        self,
+        object_names: List[str],
+        reference_object_names: List[str],
+        similarity_threshold: float = 0.6,
+    ) -> List[str]:
+        if not object_names:
+            return []
+
+        if not reference_object_names:
+            return list(object_names)
+
+        with io.StringIO() as f:
+            with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
+                object_features, reference_features = encode_phrases(
+                    self.capture.text_encoder,
+                    object_names,
+                    reference_object_names,
+                    batch_size=4,
+                )
+        similarity_matrix = object_features.dot(reference_features.T)
+        max_similarity = similarity_matrix.max(axis=1)
+        return [
+            object_names[idx]
+            for idx, similarity in enumerate(max_similarity)
+            if similarity < similarity_threshold
+        ]
 
     def _parse_original_scene_graph(self, text: str):
         sentences = sent_tokenize(text)
@@ -398,6 +427,8 @@ class CustomSCTrainer(OnlineDPOTrainer):
         added_objects: List[str],
         removed_objects: List[str],
         image_path: Optional[str],
+        added_objects_missing_from_reference: Optional[List[str]] = None,
+        removed_objects_missing_from_reference: Optional[List[str]] = None,
         added_attributes: Optional[Dict[str, Any]] = None,
         removed_attributes: Optional[Dict[str, Any]] = None,
         added_relations: Optional[List[Any]] = None,
@@ -406,47 +437,108 @@ class CustomSCTrainer(OnlineDPOTrainer):
         if not self.explainability_enabled:
             return None
         
+        if not isinstance(initial_caption, str) or not initial_caption.strip():
+            LOGGER.warning("Skipping explaination report because initial caption is empty")
+            return None
+        
+        if not isinstance(corrected_caption, str) or not corrected_caption.strip():
+            LOGGER.warning("Skipping explaination report because corrected caption is empty")
+            return None
+        
+        added_objects_missing_from_reference = list(added_objects_missing_from_reference or [])
+        removed_objects_missing_from_reference = list(removed_objects_missing_from_reference or [])
         yolo_verification_results = self._build_yolo_verification_results(
             image_path,
-            added_objects + removed_objects,
+            added_objects_missing_from_reference + removed_objects_missing_from_reference
         )
-        return build_reward_explanation_report(
-            initial_caption=initial_caption,
-            corrected_caption=corrected_caption,
-            added_objects=added_objects,
-            removed_objects=removed_objects,
-            yolo_verification_results=yolo_verification_results,
-            added_attributes=added_attributes,
-            removed_attributes=removed_attributes,
-            added_relations=added_relations,
-            removed_relations=removed_relations
-        )
+        try:
+            return build_reward_explanation_report(
+                initial_caption=initial_caption,
+                corrected_caption=corrected_caption,
+                added_objects=added_objects,
+                removed_objects=removed_objects,
+                yolo_verification_results=yolo_verification_results,
+                added_objects_missing_from_reference=added_objects_missing_from_reference,
+                removed_objects_missing_from_reference=removed_objects_missing_from_reference,
+                verification_penalty_reduction=self.verification_penalty_reduction,
+                verified_removal_reward_reduction=self.verified_removal_reward_reduction,
+                added_attributes=added_attributes,
+                removed_attributes=removed_attributes,
+                added_relations=added_relations,
+                removed_relations=removed_relations
+            )
+        except Exception as exc:
+            LOGGER.warning("Failed to build SC explanation report: %s", exc)
+            return None
 
     def _build_prediction_explanation_report(
         self,
         initial_caption: Optional[str],
         corrected_caption: Optional[str],
         image_path: Optional[str],
+        reference_caption: Optional[str] = None,
     ) -> Optional[Dict[str, Any]]:
         if not self.explainability_enabled or not initial_caption or not corrected_caption:
             return None
         
         try:
             removed_objects, added_objects, removed_relations, added_relations, removed_attributes, added_attributes = self._get_revision_for_captions(initial_caption, corrected_caption)
+            added_objects_missing_from_reference = list(added_objects)
+            removed_objects_missing_from_reference = list(removed_objects)
+            if isinstance(reference_caption, str) and reference_caption.strip():
+                reference_objects, _, _ = self._parse_original_scene_graph(reference_caption)
+                reference_object_list = list(reference_objects)
+                added_objects_missing_from_reference = self._objects_missing_from_reference(
+                    list(added_objects),
+                    reference_object_list,
+                )
+                removed_objects_missing_from_reference = self._objects_missing_from_reference(
+                    list(removed_objects),
+                    reference_object_list,
+                )
             return self._build_explanation_report(
                 initial_caption=initial_caption,
                 corrected_caption=corrected_caption,
                 added_objects=list(added_objects),
                 removed_objects=list(removed_objects),
                 image_path=image_path,
+                added_objects_missing_from_reference=added_objects_missing_from_reference,
+                removed_objects_missing_from_reference=removed_objects_missing_from_reference,
                 added_attributes=added_attributes,
                 removed_attributes=removed_attributes,
                 added_relations=list(added_relations),
                 removed_relations=list(removed_relations),
             )
         except Exception as exc:
-            LOGGER.warning("Failed to build explanation report for prediction output: %s", exc)
+            LOGGER.warning("Failed to build SC explanation report for prediction output: %s", exc)
             return None
+
+    def _log_first_response_diagnostics(
+        self,
+        first_attempt: torch.Tensor,
+        context_length: int,
+        first_responses: List[str],
+    ) -> None:
+        empty_indices = [index for index, text in enumerate(first_responses) if not isinstance(text, str) or not text.strip()]
+        if not empty_indices:
+            return
+
+        sample_messages: List[str] = []
+        for index in empty_indices[:3]:
+            completion_tokens = first_attempt[index, context_length:]
+            non_pad_tokens = int((completion_tokens != self.tokenizer.pad_token_id).sum().item())
+            raw_decoded = self.tokenizer.decode(completion_tokens, skip_special_tokens=False)
+            sample_messages.append(
+                "idx=%s non_pad_tokens=%s raw=%r cleaned=%r"
+                % (index, non_pad_tokens, raw_decoded, first_responses[index])
+            )
+
+        LOGGER.warning(
+            "First-turn caption decoded empty for %s/%s samples. Examples: %s",
+            len(empty_indices),
+            len(first_responses),
+            " | ".join(sample_messages),
+        )
 
         
     
@@ -526,6 +618,8 @@ class CustomSCTrainer(OnlineDPOTrainer):
             removed_objects_ref_list = list(removed_objects_ref)
             added_objects_ref_list = list(added_objects_ref)
             objects_gt_list = list(objects_original_gt)
+            low_similarity_removed_objects: List[str] = []
+            low_similarity_objects: List[str] = []
 
             # removed objects & gt (if not similar, it is good removal, if similar, it is bad removal)
             if removed_objects_ref_list and objects_gt_list:
@@ -535,7 +629,17 @@ class CustomSCTrainer(OnlineDPOTrainer):
                 sim_mat_1 = removed_objects_ref_features.dot(gt_objects_features.T)
                 max_sim_1 = sim_mat_1.max(axis=1)
                 rewards_soft += (0.6-max_sim_1).mean()
-                bonus += min(np.sum(max_sim_1<0.6)*0.25,0.75)
+                low_similarity_removed_objects = [
+                    removed_objects_ref_list[idx]
+                    for idx, similarity in enumerate(max_sim_1)
+                    if similarity < 0.6
+                ]
+                bonus += compute_object_removal_reward(
+                    object_names=low_similarity_removed_objects,
+                    image_path=image_path,
+                    verify_object_fn=self._verify_object_with_yolo,
+                    verified_removal_reward_reduction=self.verified_removal_reward_reduction,
+                )
                 bonus -= min(np.sum(max_sim_1>0.7)*0.25,0.75)
                 
             
@@ -591,13 +695,25 @@ class CustomSCTrainer(OnlineDPOTrainer):
             if len(text_rejected)*2 < len(text_ref):
                 bonus = -3
 
+            explanation_initial_caption = text_rejected
+            if not isinstance(explanation_initial_caption, str) or not explanation_initial_caption.strip():
+                fallback_rejected_text = prompts["rejected_text"][i] if "rejected_text" in prompts else None
+                if isinstance(fallback_rejected_text, str) and fallback_rejected_text.strip():
+                    LOGGER.info(
+                        "Using dataset rejected_text as explanation fallback for sample %s because first-turn caption was empty.",
+                        i,
+                    )
+                    explanation_initial_caption = fallback_rejected_text
+
             explanation_reports.append(
                 self._build_explanation_report(
-                    initial_caption=text_rejected,
+                    initial_caption=explanation_initial_caption,
                     corrected_caption=text_ref,
                     added_objects=added_objects_ref_list,
                     removed_objects=removed_objects_ref_list,
                     image_path=image_path,
+                    added_objects_missing_from_reference=low_similarity_objects,
+                    removed_objects_missing_from_reference=low_similarity_removed_objects,
                     added_attributes=added_attributes_ref,
                     removed_attributes=removed_attributes_ref,
                     added_relations=list(added_relations_ref),
@@ -780,6 +896,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
                         initial_caption=rejected_text,
                         corrected_caption=pred_text,
                         image_path=image_path,
+                        reference_caption=chosen_text,
                     )
 
                 res.append(
@@ -832,6 +949,7 @@ class CustomSCTrainer(OnlineDPOTrainer):
 
         context_length = prompts["input_ids"].shape[1]
         prompts["first_response"] = self.tokenizer.batch_decode(first_attempt[:,context_length:], skip_special_tokens=True)
+        self._log_first_response_diagnostics(first_attempt, context_length, prompts["first_response"])
         
         # Process completions
         first_attempt_data = self._process_completion(first_attempt, prompts)

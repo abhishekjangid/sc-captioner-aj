@@ -46,6 +46,37 @@ def compute_object_hallucination_penalty(
         penalty += object_penalty
     return min(penalty, float(max_penalty))
 
+def compute_object_removal_reward(
+    object_names: Sequence[str],
+    image_path: Optional[str],
+    verify_object_fn: Optional[Callable[[Optional[str], str], Mapping[str, Any]]] = None,
+    verified_removal_reward_reduction: float = 1.0,
+    removal_reward_weight: float = 0.25,
+    max_reward: float = 0.75,
+) -> float:
+    """Compute reward for removed objects that are absent from the reference caption.
+
+    When verification is unavailable or disabled, this falls back to the original
+    SC-Captioner behavior and applies the full removal reward.
+    """
+    if not object_names:
+        return 0.0
+
+    reduction = min(max(float(verified_removal_reward_reduction), 0.0), 1.0)
+    reward = 0.0
+    for object_name in object_names:
+        object_reward = float(removal_reward_weight)
+        if verify_object_fn is not None:
+            try:
+                verification = verify_object_fn(image_path, object_name) or {}
+            except Exception:
+                verification = {}
+
+            if bool(verification.get("verified", False)):
+                object_reward *= 1.0 - reduction
+        reward += object_reward
+    return min(reward, float(max_reward))
+
 def merge_sentence_results(results, text_processor):
     # from IPython import embed; embed()
     objects, attributes, relations = set(), collections.defaultdict(set), set()
@@ -200,6 +231,10 @@ def build_reward_explanation_report(
     added_objects,
     removed_objects,
     yolo_verification_results,
+    added_objects_missing_from_reference=None,
+    removed_objects_missing_from_reference=None,
+    verification_penalty_reduction=1.0,
+    verified_removal_reward_reduction=1.0,
     added_attributes=None,
     removed_attributes=None,
     added_relations=None,
@@ -212,6 +247,10 @@ def build_reward_explanation_report(
         added_objects=list(added_objects),
         removed_objects=list(removed_objects),
         yolo_verification_results=yolo_verification_results,
+        added_objects_missing_from_reference=added_objects_missing_from_reference,
+        removed_objects_missing_from_reference=removed_objects_missing_from_reference,
+        verification_penalty_reduction=verification_penalty_reduction,
+        verified_removal_reward_reduction=verified_removal_reward_reduction,
         added_attributes=added_attributes,
         removed_attributes=removed_attributes,
         added_relations=added_relations,

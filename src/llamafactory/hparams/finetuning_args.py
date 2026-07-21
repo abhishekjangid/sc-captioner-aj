@@ -369,6 +369,12 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
             "help": "Multiplier applied to hallucination penalties when YOLO verifies an added object. 1.0 removes the penalty and 0.0 keeps the full penalty."
         },
     )
+    verified_removal_reward_reduction: float = field(
+        default=1.0,
+        metadata={
+            "help": "Multiplier applied to removal rewards when YOLO verifies that a removed object still exists in image. 1.0 removed the reward and 0.0 keeps the full reward."
+        },
+    )
     explainability_enabled: bool = field(
         default=True,
         metadata={"help": "Whether or not to generate explanation reports for SC corrections and predictions."},
@@ -398,7 +404,8 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
         assert self.reward_model_quantization_bit in [None, 8, 4], "We only accept 4-bit or 8-bit quantization."
         assert 0.0 <= self.verification_threshold <= 1.0, "verification_threshold must be between 0.0 and 1.0."
         assert 0.0 <= self.verification_penalty_reduction <= 1.0, "verification_penalty_reduction must be between 0.0 and 1.0."
-        
+        assert 0.0 <= self.verified_removal_reward_reduction <= 1.0, "verified_removal_reward_reduction must be between 0.0 and 1.0."
+
         if self.stage == "ppo" and self.reward_model is None:
             raise ValueError("`reward_model` is necessary for PPO training.")
 
