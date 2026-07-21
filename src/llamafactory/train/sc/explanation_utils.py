@@ -46,11 +46,17 @@ def generate_explanation_json(
     unverified_removed_objects = [
         object_name for object_name in normalized_removed_missing if object_name not in verified_removed_objects
     ]
+    verification_stats = _build_verification_stats(
+        verified_added_objects=verified_added_objects,
+        verified_removed_objects=verified_removed_objects,
+        unverified_added_objects=unverified_added_objects,
+        unverified_removed_objects=unverified_removed_objects
+    )
     confidence_score = _compute_confidence_score(
         verified_added_objects=verified_added_objects,
         verified_removed_objects=verified_removed_objects,
-        added_objects_missing_from_reference=normalized_added_missing,
-        removed_objects_missing_from_reference=normalized_removed_missing,
+        unverified_added_objects=unverified_added_objects,
+        unverified_removed_objects=unverified_removed_objects
     )
     added_object_decisions = _build_added_object_decisions(
         normalized_added,
@@ -89,6 +95,7 @@ def generate_explanation_json(
             "verified_removed_objects": verified_removed_objects,
             "unverified_removed_objects": unverified_removed_objects,
         },
+        "verification_stats": verification_stats,
         "reward_decisions": {
             "added_object_decisions": added_object_decisions,
             "removed_object_decisions": removed_object_decisions,
@@ -308,18 +315,46 @@ def _build_summary(
 
 def _compute_confidence_score(
     verified_added_objects: Sequence[str],
+    unverified_added_objects: Sequence[str],
     verified_removed_objects: Sequence[str],
-    added_objects_missing_from_reference: Sequence[str],
-    removed_objects_missing_from_reference: Sequence[str],
+    unverified_removed_objects: Sequence[str],
 ) -> float:
-    total_verification_candidates = len(added_objects_missing_from_reference) + len(removed_objects_missing_from_reference)
-    if total_verification_candidates <= 0:
-        return 0.0
+    return compute_verification_confidence(
+        verified_added_objects=verified_added_objects,
+        unverified_added_objects=unverified_added_objects,
+        verified_removed_objects=verified_removed_objects,
+        unverified_removed_objects=unverified_removed_objects,
+    )
 
-    confidence_score = (
-        len(verified_added_objects) + len(verified_removed_objects)
-    ) / float(total_verification_candidates)
-    return round(confidence_score, 4)
+def compute_verification_confidence(
+    verified_added_objects: Sequence[str],
+    unverified_added_objects: Sequence[str],
+    verified_removed_objects: Sequence[str],
+    unverified_removed_objects: Sequence[str],
+) -> float:
+    verified_count = len(verified_added_objects) + len(verified_removed_objects)
+    unverified_count = len(unverified_added_objects) + len(unverified_removed_objects)
+    total_count = verified_count + unverified_count
+    if total_count <= 0:
+        return 1.0
+
+    confidence_score = verified_count / float(total_count)
+    confidence_score = max(0.0, min(1.0, confidence_score))
+    return round(confidence_score, 2)
+
+def _build_verification_stats(
+    verified_added_objects: Sequence[str],
+    verified_removed_objects: Sequence[str],
+    unverified_added_objects: Sequence[str],
+    unverified_removed_objects: Sequence[str],
+) -> Dict[str, int]:
+    verified_count = len(verified_added_objects) + len(verified_removed_objects)
+    unverified_count = len(unverified_added_objects) + len(unverified_removed_objects)
+    return {
+        "verified_objects": verified_count,
+        "unverified_objects": unverified_count,
+        "total_checked_objects": verified_count + unverified_count,
+    }
 
 def _format_object_list(objects: Iterable[str]) -> str:
     values = [str(object_name).strip() for object_name in objects if str(object_name).strip()]
