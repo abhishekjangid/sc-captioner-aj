@@ -321,6 +321,12 @@ def _compute_confidence_score(
     ) / float(total_verification_candidates)
     return round(confidence_score, 4)
 
+def _format_object_list(objects: Iterable[str]) -> str:
+    values = [str(object_name).strip() for object_name in objects if str(object_name).strip()]
+    if not values:
+        return "none"
+    return ", ".join(values)
+
 def _build_added_object_decisions(
     added_objects: Sequence[str],
     added_objects_missing_from_reference: Sequence[str],

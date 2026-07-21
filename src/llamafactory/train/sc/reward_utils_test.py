@@ -4,6 +4,9 @@ from llamafactory.train.sc.reward_utils import (
     compute_object_removal_reward,
 )
 
+def _raise(_image_path, _object_name):
+    raise RuntimeError("verification failed")
+
 def test_added_object_verified_by_yolo_skips_penalty() -> None:
     penalty = compute_object_hallucination_penalty(
         object_names=["laptop"],
