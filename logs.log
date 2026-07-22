@@ -1,557 +1,31 @@
-07/22/2026 12:26:19 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000514251.jpg [('chair', 0.95), ('chair', 0.94), ('refrigerator', 0.94), ('chair', 0.93), ('sink', 0.72), ('dining table', 0.56), ('oven', 0.48), ('bottle', 0.42), ('oven', 0.31), ('dining table', 0.31), ('oven', 0.26)]
-07/22/2026 12:26:19 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000514251.jpg [('chair', 0.95), ('chair', 0.94), ('refrigerator', 0.94), ('chair', 0.93), ('sink', 0.72), ('dining table', 0.56), ('oven', 0.48), ('bottle', 0.42), ('oven', 0.31), ('dining table', 0.31), ('oven', 0.26)]
-{'loss': -13.1827, 'grad_norm': 157.8280487060547, 'learning_rate': 4.809698831278217e-06, 'epoch': 0.22}                                     
- 22%|███████████████████████▊                                                                                   | 2/9 [02:52<09:07, 78.27s/it]07/22/2026 12:27:01 - WARNING - llamafactory.train.sc.trainer - First-turn caption decoded empty for 1/1 samples. Examples: idx=0 non_pad_tokens=1 raw='<|im_end|>' cleaned=''
-07/22/2026 12:27:06 - INFO - llamafactory.train.sc.trainer - Using dataset rejected_text as explanation fallback for sample 0 because first-turn caption was empty.
-07/22/2026 12:27:06 - INFO - llamafactory.train.sc.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/coco/train2017/000000097790.jpg candidates=[]
- 33%|███████████████████████████████████▋                                                                       | 3/9 [03:38<06:23, 63.87s/it]07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - Cached 6 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg candidates=['seat cover', 'corner', 'jean', 'washbasin']
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-07/22/2026 12:28:44 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000214191.jpg [('toilet', 0.94), ('person', 0.93), ('sink', 0.83), ('bottle', 0.42), ('bottle', 0.36), ('bottle', 0.35)]
-{'loss': -84.7392, 'grad_norm': 61.67196273803711, 'learning_rate': 3.4567085809127247e-06, 'epoch': 0.44}                                    
- 44%|███████████████████████████████████████████████▌                                                           | 4/9 [05:18<06:29, 77.81s/it][INFO|trainer.py:3705] 2026-07-22 12:28:46,333 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4
-[INFO|configuration_utils.py:670] 2026-07-22 12:28:46,344 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
-[WARNING|modeling_rope_utils.py:379] 2026-07-22 12:28:46,344 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
-[INFO|configuration_utils.py:739] 2026-07-22 12:28:46,345 >> Model config Qwen2VLConfig {
-  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
-  "architectures": [
-    "Qwen2VLForConditionalGeneration"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 151643,
-  "eos_token_id": 151645,
-  "hidden_act": "silu",
-  "hidden_size": 1536,
-  "image_token_id": 151655,
-  "initializer_range": 0.02,
-  "intermediate_size": 8960,
-  "max_position_embeddings": 32768,
-  "max_window_layers": 28,
-  "model_type": "qwen2_vl",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 28,
-  "num_key_value_heads": 2,
-  "rms_norm_eps": 1e-06,
-  "rope_scaling": {
-    "mrope_section": [
-      16,
-      24,
-      24
-    ],
-    "rope_type": "default",
-    "type": "default"
-  },
-  "rope_theta": 1000000.0,
-  "sliding_window": 32768,
-  "tie_word_embeddings": true,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "use_sliding_window": false,
-  "video_token_id": 151656,
-  "vision_config": {
-    "hidden_size": 1536,
-    "in_chans": 3,
-    "model_type": "qwen2_vl",
-    "spatial_patch_size": 14
-  },
-  "vision_end_token_id": 151653,
-  "vision_start_token_id": 151652,
-  "vision_token_id": 151654,
-  "vocab_size": 151936
+[INFO|modeling_utils.py:3726] 2026-07-22 23:07:00,170 >> loading weights file model.safetensors from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/model.safetensors
+[INFO|configuration_utils.py:1099] 2026-07-22 23:07:00,203 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
 }
 
-[INFO|tokenization_utils_base.py:2649] 2026-07-22 12:28:46,439 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4/tokenizer_config.json
-[INFO|tokenization_utils_base.py:2658] 2026-07-22 12:28:46,439 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4/special_tokens_map.json
-[INFO|image_processing_base.py:258] 2026-07-22 12:28:46,757 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-4/preprocessor_config.json
-07/22/2026 12:29:40 - WARNING - llamafactory.train.sc.trainer - First-turn caption decoded empty for 1/1 samples. Examples: idx=0 non_pad_tokens=1 raw='<|im_end|>' cleaned=''
-07/22/2026 12:29:46 - INFO - llamafactory.train.sc.trainer - Using dataset rejected_text as explanation fallback for sample 0 because first-turn caption was empty.
-07/22/2026 12:29:46 - INFO - llamafactory.train.sc.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/coco/train2017/000000184800.jpg candidates=[]
- 56%|███████████████████████████████████████████████████████████▍                                               | 5/9 [06:19<04:48, 72.02s/it]07/22/2026 12:31:28 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg
-07/22/2026 12:31:28 - INFO - llamafactory.train.sc.yolo_verifier - Cached 3 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg
-07/22/2026 12:31:28 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg [('person', 0.92), ('person', 0.83), ('skis', 0.56)]
-07/22/2026 12:31:28 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg [('person', 0.92), ('person', 0.83), ('skis', 0.56)]
-07/22/2026 12:31:28 - INFO - llamafactory.train.sc.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg candidates=['trouser', 'slope']
-07/22/2026 12:31:28 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg [('person', 0.92), ('person', 0.83), ('skis', 0.56)]
-07/22/2026 12:31:28 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000469961.jpg [('person', 0.92), ('person', 0.83), ('skis', 0.56)]
-{'loss': -24.3439, 'grad_norm': 99.59918975830078, 'learning_rate': 1.5432914190872757e-06, 'epoch': 0.67}                                    
- 67%|███████████████████████████████████████████████████████████████████████▎                                   | 6/9 [08:02<04:07, 82.34s/it]07/22/2026 12:33:15 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000508801.jpg
-07/22/2026 12:33:15 - INFO - llamafactory.train.sc.yolo_verifier - Cached 4 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000508801.jpg
-07/22/2026 12:33:15 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000508801.jpg [('pizza', 0.95), ('knife', 0.94), ('fork', 0.73), ('dining table', 0.69)]
-07/22/2026 12:33:15 - INFO - llamafactory.train.sc.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/coco/train2017/000000508801.jpg candidates=['spinach leaves']
-07/22/2026 12:33:15 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000508801.jpg [('pizza', 0.95), ('knife', 0.94), ('fork', 0.73), ('dining table', 0.69)]
- 78%|███████████████████████████████████████████████████████████████████████████████████▏                       | 7/9 [09:49<03:00, 90.35s/it]07/22/2026 12:35:13 - INFO - llamafactory.train.sc.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/coco/train2017/000000477810.jpg candidates=[]
-{'loss': 23.5079, 'grad_norm': 5.032026290893555, 'learning_rate': 1.9030116872178317e-07, 'epoch': 0.89}                                     
- 89%|███████████████████████████████████████████████████████████████████████████████████████████████            | 8/9 [11:47<01:39, 99.21s/it][INFO|trainer.py:3705] 2026-07-22 12:35:15,491 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8
-[INFO|configuration_utils.py:670] 2026-07-22 12:35:15,502 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
-[WARNING|modeling_rope_utils.py:379] 2026-07-22 12:35:15,503 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
-[INFO|configuration_utils.py:739] 2026-07-22 12:35:15,503 >> Model config Qwen2VLConfig {
-  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
-  "architectures": [
-    "Qwen2VLForConditionalGeneration"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 151643,
-  "eos_token_id": 151645,
-  "hidden_act": "silu",
-  "hidden_size": 1536,
-  "image_token_id": 151655,
-  "initializer_range": 0.02,
-  "intermediate_size": 8960,
-  "max_position_embeddings": 32768,
-  "max_window_layers": 28,
-  "model_type": "qwen2_vl",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 28,
-  "num_key_value_heads": 2,
-  "rms_norm_eps": 1e-06,
-  "rope_scaling": {
-    "mrope_section": [
-      16,
-      24,
-      24
-    ],
-    "rope_type": "default",
-    "type": "default"
-  },
-  "rope_theta": 1000000.0,
-  "sliding_window": 32768,
-  "tie_word_embeddings": true,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "use_sliding_window": false,
-  "video_token_id": 151656,
-  "vision_config": {
-    "hidden_size": 1536,
-    "in_chans": 3,
-    "model_type": "qwen2_vl",
-    "spatial_patch_size": 14
-  },
-  "vision_end_token_id": 151653,
-  "vision_start_token_id": 151652,
-  "vision_token_id": 151654,
-  "vocab_size": 151936
+[INFO|modeling_utils.py:4568] 2026-07-22 23:07:00,537 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
+
+[INFO|modeling_utils.py:4576] 2026-07-22 23:07:00,537 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at lizhuang144/flan-t5-base-VG-factual-sg.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
+[INFO|configuration_utils.py:1054] 2026-07-22 23:07:01,168 >> loading configuration file generation_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/generation_config.json
+[INFO|configuration_utils.py:1099] 2026-07-22 23:07:01,169 >> Generate config GenerationConfig {
+  "decoder_start_token_id": 0,
+  "eos_token_id": 1,
+  "pad_token_id": 0
 }
 
-[INFO|tokenization_utils_base.py:2649] 2026-07-22 12:35:15,597 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8/tokenizer_config.json
-[INFO|tokenization_utils_base.py:2658] 2026-07-22 12:35:15,598 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8/special_tokens_map.json
-[INFO|image_processing_base.py:258] 2026-07-22 12:35:15,904 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-8/preprocessor_config.json
-07/22/2026 12:36:00 - WARNING - llamafactory.train.sc.trainer - First-turn caption decoded empty for 1/1 samples. Examples: idx=0 non_pad_tokens=1 raw='<|im_end|>' cleaned=''
-07/22/2026 12:36:05 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/coco/train2017/000000375311.jpg
-07/22/2026 12:36:05 - INFO - llamafactory.train.sc.yolo_verifier - Cached 3 YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000375311.jpg
-07/22/2026 12:36:05 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000375311.jpg [('bus', 0.96), ('car', 0.9), ('car', 0.81)]
-07/22/2026 12:36:05 - INFO - llamafactory.train.sc.trainer - Using dataset rejected_text as explanation fallback for sample 0 because first-turn caption was empty.
-07/22/2026 12:36:05 - INFO - llamafactory.train.sc.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/coco/train2017/000000375311.jpg candidates=['persona']
-07/22/2026 12:36:05 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/coco/train2017/000000375311.jpg [('bus', 0.96), ('car', 0.9), ('car', 0.81)]
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████| 9/9 [12:38<00:00, 84.28s/it][INFO|trainer.py:3705] 2026-07-22 12:36:06,953 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9
-[INFO|configuration_utils.py:670] 2026-07-22 12:36:06,963 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
-[WARNING|modeling_rope_utils.py:379] 2026-07-22 12:36:06,963 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
-[INFO|configuration_utils.py:739] 2026-07-22 12:36:06,964 >> Model config Qwen2VLConfig {
-  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
-  "architectures": [
-    "Qwen2VLForConditionalGeneration"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 151643,
-  "eos_token_id": 151645,
-  "hidden_act": "silu",
-  "hidden_size": 1536,
-  "image_token_id": 151655,
-  "initializer_range": 0.02,
-  "intermediate_size": 8960,
-  "max_position_embeddings": 32768,
-  "max_window_layers": 28,
-  "model_type": "qwen2_vl",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 28,
-  "num_key_value_heads": 2,
-  "rms_norm_eps": 1e-06,
-  "rope_scaling": {
-    "mrope_section": [
-      16,
-      24,
-      24
-    ],
-    "rope_type": "default",
-    "type": "default"
-  },
-  "rope_theta": 1000000.0,
-  "sliding_window": 32768,
-  "tie_word_embeddings": true,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "use_sliding_window": false,
-  "video_token_id": 151656,
-  "vision_config": {
-    "hidden_size": 1536,
-    "in_chans": 3,
-    "model_type": "qwen2_vl",
-    "spatial_patch_size": 14
-  },
-  "vision_end_token_id": 151653,
-  "vision_start_token_id": 151652,
-  "vision_token_id": 151654,
-  "vocab_size": 151936
-}
-
-[INFO|tokenization_utils_base.py:2649] 2026-07-22 12:36:07,065 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9/tokenizer_config.json
-[INFO|tokenization_utils_base.py:2658] 2026-07-22 12:36:07,065 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9/special_tokens_map.json
-[INFO|image_processing_base.py:258] 2026-07-22 12:36:07,376 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/checkpoint-9/preprocessor_config.json
-[INFO|trainer.py:2505] 2026-07-22 12:36:07,376 >> 
-
-Training completed. Do not forget to share your model on huggingface.co/models =)
-
-
-{'train_runtime': 759.1986, 'train_samples_per_second': 0.012, 'train_steps_per_second': 0.012, 'train_loss': -38.20979563395182, 'epoch': 1.0}
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████| 9/9 [12:39<00:00, 84.36s/it]
-[INFO|image_processing_base.py:258] 2026-07-22 12:36:07,377 >> Image processor saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/preprocessor_config.json
-[INFO|trainer.py:3705] 2026-07-22 12:36:07,377 >> Saving model checkpoint to saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier
-[INFO|configuration_utils.py:670] 2026-07-22 12:36:07,385 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
-[WARNING|modeling_rope_utils.py:379] 2026-07-22 12:36:07,385 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
-[INFO|configuration_utils.py:739] 2026-07-22 12:36:07,386 >> Model config Qwen2VLConfig {
-  "_name_or_path": "Qwen/Qwen2-VL-2B-Instruct",
-  "architectures": [
-    "Qwen2VLForConditionalGeneration"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 151643,
-  "eos_token_id": 151645,
-  "hidden_act": "silu",
-  "hidden_size": 1536,
-  "image_token_id": 151655,
-  "initializer_range": 0.02,
-  "intermediate_size": 8960,
-  "max_position_embeddings": 32768,
-  "max_window_layers": 28,
-  "model_type": "qwen2_vl",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 28,
-  "num_key_value_heads": 2,
-  "rms_norm_eps": 1e-06,
-  "rope_scaling": {
-    "mrope_section": [
-      16,
-      24,
-      24
-    ],
-    "rope_type": "default",
-    "type": "default"
-  },
-  "rope_theta": 1000000.0,
-  "sliding_window": 32768,
-  "tie_word_embeddings": true,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "use_sliding_window": false,
-  "video_token_id": 151656,
-  "vision_config": {
-    "hidden_size": 1536,
-    "in_chans": 3,
-    "model_type": "qwen2_vl",
-    "spatial_patch_size": 14
-  },
-  "vision_end_token_id": 151653,
-  "vision_start_token_id": 151652,
-  "vision_token_id": 151654,
-  "vocab_size": 151936
-}
-
-[INFO|tokenization_utils_base.py:2649] 2026-07-22 12:36:07,475 >> tokenizer config file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/tokenizer_config.json
-[INFO|tokenization_utils_base.py:2658] 2026-07-22 12:36:07,475 >> Special tokens file saved in saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/special_tokens_map.json
-***** train metrics *****
-  epoch                    =        1.0
-  total_flos               =        0GF
-  train_loss               =   -38.2098
-  train_runtime            = 0:12:39.19
-  train_samples_per_second =      0.012
-  train_steps_per_second   =      0.012
-Figure saved at: saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier/training_loss.png
-07/22/2026 12:36:07 - WARNING - llamafactory.extras.ploting - No metric eval_loss to plot.
-07/22/2026 12:36:07 - WARNING - llamafactory.extras.ploting - No metric rewards/accuracies to plot.
-[INFO|modelcard.py:449] 2026-07-22 12:36:07,621 >> Dropping the following result as it does not have all the necessary fields:
-{'task': {'name': 'Causal Language Modeling', 'type': 'text-generation'}}
-(iitj) rutvika@Rutvikas-MacBook-Air sc-captioner-aj % llamafactory-cli train config/qwen2vl_test_lora_sc_docci500_2b_mini_verifier.yaml
-/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
-  import pkg_resources
-07/22/2026 12:40:50 - INFO - llamafactory.hparams.parser - Process rank: 0, device: mps, n_gpu: 1, distributed training: False, compute dtype: None
-[INFO|configuration_utils.py:670] 2026-07-22 12:40:50,374 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
-[WARNING|modeling_rope_utils.py:379] 2026-07-22 12:40:50,375 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
-[INFO|configuration_utils.py:739] 2026-07-22 12:40:50,376 >> Model config Qwen2VLConfig {
-  "_name_or_path": "saves/qwen2_vl-2b/merged/sft",
-  "architectures": [
-    "Qwen2VLForConditionalGeneration"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 151643,
-  "eos_token_id": 151645,
-  "hidden_act": "silu",
-  "hidden_size": 1536,
-  "image_token_id": 151655,
-  "initializer_range": 0.02,
-  "intermediate_size": 8960,
-  "max_position_embeddings": 32768,
-  "max_window_layers": 28,
-  "model_type": "qwen2_vl",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 28,
-  "num_key_value_heads": 2,
-  "rms_norm_eps": 1e-06,
-  "rope_scaling": {
-    "mrope_section": [
-      16,
-      24,
-      24
-    ],
-    "rope_type": "default",
-    "type": "default"
-  },
-  "rope_theta": 1000000.0,
-  "sliding_window": 32768,
-  "tie_word_embeddings": true,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "use_sliding_window": false,
-  "video_token_id": 151656,
-  "vision_config": {
-    "hidden_size": 1536,
-    "in_chans": 3,
-    "model_type": "qwen2_vl",
-    "spatial_patch_size": 14
-  },
-  "vision_end_token_id": 151653,
-  "vision_start_token_id": 151652,
-  "vision_token_id": 151654,
-  "vocab_size": 151936
-}
-
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,376 >> loading file vocab.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,376 >> loading file merges.txt
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,377 >> loading file tokenizer.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,377 >> loading file added_tokens.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,377 >> loading file special_tokens_map.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,377 >> loading file tokenizer_config.json
-[INFO|tokenization_utils_base.py:2478] 2026-07-22 12:40:50,528 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
-[INFO|image_processing_base.py:373] 2026-07-22 12:40:50,530 >> loading configuration file saves/qwen2_vl-2b/merged/sft/preprocessor_config.json
-[INFO|image_processing_base.py:373] 2026-07-22 12:40:50,531 >> loading configuration file saves/qwen2_vl-2b/merged/sft/preprocessor_config.json
-[INFO|image_processing_base.py:429] 2026-07-22 12:40:50,531 >> Image processor Qwen2VLImageProcessor {
-  "do_convert_rgb": true,
-  "do_normalize": true,
-  "do_rescale": true,
-  "do_resize": true,
-  "image_mean": [
-    0.48145466,
-    0.4578275,
-    0.40821073
-  ],
-  "image_processor_type": "Qwen2VLImageProcessor",
-  "image_std": [
-    0.26862954,
-    0.26130258,
-    0.27577711
-  ],
-  "max_pixels": 12845056,
-  "merge_size": 2,
-  "min_pixels": 3136,
-  "patch_size": 14,
-  "processor_class": "Qwen2VLProcessor",
-  "resample": 3,
-  "rescale_factor": 0.00392156862745098,
-  "size": {
-    "max_pixels": 12845056,
-    "min_pixels": 3136
-  },
-  "temporal_patch_size": 2
-}
-
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,531 >> loading file vocab.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,531 >> loading file merges.txt
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,531 >> loading file tokenizer.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,531 >> loading file added_tokens.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,531 >> loading file special_tokens_map.json
-[INFO|tokenization_utils_base.py:2212] 2026-07-22 12:40:50,531 >> loading file tokenizer_config.json
-[INFO|tokenization_utils_base.py:2478] 2026-07-22 12:40:50,676 >> Special tokens have been added in the vocabulary, make sure the associated word embeddings are fine-tuned or trained.
-[INFO|processing_utils.py:744] 2026-07-22 12:40:50,868 >> Processor Qwen2VLProcessor:
-- image_processor: Qwen2VLImageProcessor {
-  "do_convert_rgb": true,
-  "do_normalize": true,
-  "do_rescale": true,
-  "do_resize": true,
-  "image_mean": [
-    0.48145466,
-    0.4578275,
-    0.40821073
-  ],
-  "image_processor_type": "Qwen2VLImageProcessor",
-  "image_std": [
-    0.26862954,
-    0.26130258,
-    0.27577711
-  ],
-  "max_pixels": 12845056,
-  "merge_size": 2,
-  "min_pixels": 3136,
-  "patch_size": 14,
-  "processor_class": "Qwen2VLProcessor",
-  "resample": 3,
-  "rescale_factor": 0.00392156862745098,
-  "size": {
-    "max_pixels": 12845056,
-    "min_pixels": 3136
-  },
-  "temporal_patch_size": 2
-}
-
-- tokenizer: Qwen2TokenizerFast(name_or_path='saves/qwen2_vl-2b/merged/sft', vocab_size=151643, model_max_length=32768, is_fast=True, padding_side='left', truncation_side='right', special_tokens={'eos_token': '<|im_end|>', 'pad_token': '<|endoftext|>', 'additional_special_tokens': ['<|im_start|>', '<|im_end|>', '<|object_ref_start|>', '<|object_ref_end|>', '<|box_start|>', '<|box_end|>', '<|quad_start|>', '<|quad_end|>', '<|vision_start|>', '<|vision_end|>', '<|vision_pad|>', '<|image_pad|>', '<|video_pad|>']}, clean_up_tokenization_spaces=False),  added_tokens_decoder={
-        151643: AddedToken("<|endoftext|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151644: AddedToken("<|im_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151645: AddedToken("<|im_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151646: AddedToken("<|object_ref_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151647: AddedToken("<|object_ref_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151648: AddedToken("<|box_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151649: AddedToken("<|box_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151650: AddedToken("<|quad_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151651: AddedToken("<|quad_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151652: AddedToken("<|vision_start|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151653: AddedToken("<|vision_end|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151654: AddedToken("<|vision_pad|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151655: AddedToken("<|image_pad|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-        151656: AddedToken("<|video_pad|>", rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),
-}
-
-{
-  "processor_class": "Qwen2VLProcessor"
-}
-
-07/22/2026 12:40:50 - INFO - llamafactory.data.template - Replace eos token: <|im_end|>
-07/22/2026 12:40:50 - INFO - llamafactory.data.loader - Loading dataset test_docci500_small.json...
-eval example:
-input_ids:
-[151644, 8948, 198, 2610, 525, 264, 10950, 17847, 13, 151645, 198, 151644, 872, 198, 151652, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151655, 151653, 32123, 419, 2168, 438, 29257, 438, 3204, 11, 2041, 32322, 13, 60785, 1128, 498, 1490, 13, 151645, 198, 151644, 77091, 198]
-inputs:
-<|im_start|>system
-You are a helpful assistant.<|im_end|>
-<|im_start|>user
-<|vision_start|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|image_pad|><|vision_end|>Caption this image as accurately as possible, without speculation. Describe what you see.<|im_end|>
-<|im_start|>assistant
-
-[INFO|configuration_utils.py:670] 2026-07-22 12:40:52,023 >> loading configuration file saves/qwen2_vl-2b/merged/sft/config.json
-[WARNING|modeling_rope_utils.py:379] 2026-07-22 12:40:52,023 >> Unrecognized keys in `rope_scaling` for 'rope_type'='default': {'mrope_section'}
-[INFO|configuration_utils.py:739] 2026-07-22 12:40:52,023 >> Model config Qwen2VLConfig {
-  "_name_or_path": "saves/qwen2_vl-2b/merged/sft",
-  "architectures": [
-    "Qwen2VLForConditionalGeneration"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 151643,
-  "eos_token_id": 151645,
-  "hidden_act": "silu",
-  "hidden_size": 1536,
-  "image_token_id": 151655,
-  "initializer_range": 0.02,
-  "intermediate_size": 8960,
-  "max_position_embeddings": 32768,
-  "max_window_layers": 28,
-  "model_type": "qwen2_vl",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 28,
-  "num_key_value_heads": 2,
-  "rms_norm_eps": 1e-06,
-  "rope_scaling": {
-    "mrope_section": [
-      16,
-      24,
-      24
-    ],
-    "rope_type": "default",
-    "type": "default"
-  },
-  "rope_theta": 1000000.0,
-  "sliding_window": 32768,
-  "tie_word_embeddings": true,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "use_sliding_window": false,
-  "video_token_id": 151656,
-  "vision_config": {
-    "hidden_size": 1536,
-    "in_chans": 3,
-    "model_type": "qwen2_vl",
-    "spatial_patch_size": 14
-  },
-  "vision_end_token_id": 151653,
-  "vision_start_token_id": 151652,
-  "vision_token_id": 151654,
-  "vocab_size": 151936
-}
-
-07/22/2026 12:40:52 - INFO - llamafactory.model.patcher - Using KV cache for faster generation.
-[INFO|modeling_utils.py:3723] 2026-07-22 12:40:52,032 >> loading weights file saves/qwen2_vl-2b/merged/sft/model.safetensors.index.json
-[INFO|modeling_utils.py:1622] 2026-07-22 12:40:52,032 >> Instantiating Qwen2VLForConditionalGeneration model under default dtype torch.float32.
-[INFO|configuration_utils.py:1099] 2026-07-22 12:40:52,033 >> Generate config GenerationConfig {
-  "bos_token_id": 151643,
-  "eos_token_id": 151645
-}
-
-[WARNING|logging.py:328] 2026-07-22 12:40:52,038 >> `Qwen2VLRotaryEmbedding` can now be fully parameterized by passing the model config through the `config` argument. All other arguments will be removed in v4.46
-Loading checkpoint shards: 100%|████████████████████████████████████████████████████████████████████████████████| 3/3 [00:03<00:00,  1.20s/it]
-[INFO|modeling_utils.py:4568] 2026-07-22 12:40:55,660 >> All model checkpoint weights were used when initializing Qwen2VLForConditionalGeneration.
-
-[INFO|modeling_utils.py:4576] 2026-07-22 12:40:55,660 >> All the weights of Qwen2VLForConditionalGeneration were initialized from the model checkpoint at saves/qwen2_vl-2b/merged/sft.
-If your task is similar to the task the model of the checkpoint was trained on, you can already use Qwen2VLForConditionalGeneration for predictions without further training.
-[INFO|configuration_utils.py:1052] 2026-07-22 12:40:55,664 >> loading configuration file saves/qwen2_vl-2b/merged/sft/generation_config.json
-[INFO|configuration_utils.py:1099] 2026-07-22 12:40:55,664 >> Generate config GenerationConfig {
-  "bos_token_id": 151643,
-  "do_sample": true,
-  "eos_token_id": [
-    151645,
-    151643
-  ],
-  "pad_token_id": 151643,
-  "temperature": 0.01,
-  "top_k": 1,
-  "top_p": 0.001
-}
-
-07/22/2026 12:40:55 - INFO - llamafactory.model.model_utils.attention - Using vanilla attention implementation.
-07/22/2026 12:40:55 - INFO - llamafactory.model.adapter - Merged 1 adapter(s).
-07/22/2026 12:40:55 - INFO - llamafactory.model.adapter - Loaded adapter(s): saves/qwen2_vl-2b/lora/sc_coco6k_mini_verifier
-07/22/2026 12:40:55 - INFO - llamafactory.model.loader - all params: 2,208,985,600
-[INFO|trainer.py:464] 2026-07-22 12:40:55,981 >> You have loaded a model on multiple GPUs. `is_model_parallel` attribute will be force-set to `True` to avoid any unexpected behavior such as device placement mismatching.
-07/22/2026 12:40:55 - INFO - llamafactory.train.sft.trainer - 
-***** Running Prediction *****
-07/22/2026 12:40:55 - INFO - llamafactory.train.sft.trainer -   Num examples = 10
-07/22/2026 12:40:55 - INFO - llamafactory.train.sft.trainer -   Batch size = 1
-/opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/torch/utils/data/dataloader.py:759: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, device pinned memory won't be used.
-  super().__init__(loader)
-100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [03:09<00:00, 22.05s/it]Building prefix dict from the default dictionary ...
-Dumping model to file cache /var/folders/cv/tvb4zv1x0ybglj_sh_4ppp040000gn/T/jieba.cache
-Loading model cost 0.197 seconds.
-Prefix dict has been built successfully.
-100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 10/10 [03:09<00:00, 18.99s/it]
-***** predict metrics *****
-  predict_bleu-4                 =    42.7555
-  predict_model_preparation_time =      0.003
-  predict_rouge-1                =    38.5146
-  predict_rouge-2                =    14.6623
-  predict_rouge-l                =    24.6995
-  predict_runtime                = 0:03:28.24
-  predict_samples_per_second     =      0.048
-  predict_steps_per_second       =      0.048
-07/22/2026 12:44:24 - INFO - llamafactory.train.sft.trainer - Saving prediction results to saves/eval_qwen2vl-2b/sc/docci500_mini_verifier/generated_predictions.jsonl
-[INFO|configuration_utils.py:672] 2026-07-22 12:44:27,215 >> loading configuration file config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/config.json
-[INFO|configuration_utils.py:739] 2026-07-22 12:44:27,219 >> Model config MPNetConfig {
+07/22/2026 23:07:08 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_04975.jpg candidates=[]
+07/22/2026 23:07:11 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg candidates=['ramp', 'water surface', 'upper level']
+07/22/2026 23:07:11 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg
+07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Using Apple Silicon MPS for YOLO verification
+07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Loading YOLO model=yolov8x.pt device=mps
+07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Cached 2 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg
+07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
+07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Loading semantic similarity model=sentence-transformers/all-mpnet-base-v2
+[INFO|configuration_utils.py:672] 2026-07-22 23:07:17,052 >> loading configuration file config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/config.json
+[INFO|configuration_utils.py:739] 2026-07-22 23:07:17,054 >> Model config MPNetConfig {
   "_name_or_path": "sentence-transformers/all-mpnet-base-v2",
   "architectures": [
     "MPNetForMaskedLM"
@@ -575,13 +49,13 @@ Prefix dict has been built successfully.
   "vocab_size": 30527
 }
 
-[INFO|modeling_utils.py:3726] 2026-07-22 12:44:27,302 >> loading weights file model.safetensors from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/model.safetensors
-[INFO|modeling_utils.py:4568] 2026-07-22 12:44:27,322 >> All model checkpoint weights were used when initializing MPNetModel.
+[INFO|modeling_utils.py:3726] 2026-07-22 23:07:17,055 >> loading weights file model.safetensors from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/model.safetensors
+[INFO|modeling_utils.py:4568] 2026-07-22 23:07:17,092 >> All model checkpoint weights were used when initializing MPNetModel.
 
-[INFO|modeling_utils.py:4576] 2026-07-22 12:44:27,322 >> All the weights of MPNetModel were initialized from the model checkpoint at sentence-transformers/all-mpnet-base-v2.
+[INFO|modeling_utils.py:4576] 2026-07-22 23:07:17,092 >> All the weights of MPNetModel were initialized from the model checkpoint at sentence-transformers/all-mpnet-base-v2.
 If your task is similar to the task the model of the checkpoint was trained on, you can already use MPNetModel for predictions without further training.
-[INFO|configuration_utils.py:672] 2026-07-22 12:44:28,625 >> loading configuration file config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/config.json
-[INFO|configuration_utils.py:739] 2026-07-22 12:44:28,626 >> Model config MPNetConfig {
+[INFO|configuration_utils.py:672] 2026-07-22 23:07:19,003 >> loading configuration file config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/config.json
+[INFO|configuration_utils.py:739] 2026-07-22 23:07:19,004 >> Model config MPNetConfig {
   "_name_or_path": "sentence-transformers/all-mpnet-base-v2",
   "architectures": [
     "MPNetForMaskedLM"
@@ -605,136 +79,38 @@ If your task is similar to the task the model of the checkpoint was trained on, 
   "vocab_size": 30527
 }
 
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:28,913 >> loading file vocab.txt from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/vocab.txt
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:28,914 >> loading file tokenizer.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer.json
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:28,914 >> loading file added_tokens.json from cache at None
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:28,914 >> loading file special_tokens_map.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/special_tokens_map.json
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:28,914 >> loading file tokenizer_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file vocab.txt from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/vocab.txt
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file tokenizer.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer.json
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file special_tokens_map.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file tokenizer_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer_config.json
 /opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/transformers/tokenization_utils_base.py:1617: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be deprecated in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
   warnings.warn(
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:30,124 >> loading file spiece.model from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/spiece.model
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:30,124 >> loading file tokenizer.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/tokenizer.json
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:30,124 >> loading file added_tokens.json from cache at None
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:30,124 >> loading file special_tokens_map.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/special_tokens_map.json
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 12:44:30,124 >> loading file tokenizer_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/tokenizer_config.json
-[INFO|configuration_utils.py:672] 2026-07-22 12:44:30,608 >> loading configuration file config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/config.json
-[INFO|configuration_utils.py:739] 2026-07-22 12:44:30,611 >> Model config T5Config {
-  "_name_or_path": "lizhuang144/flan-t5-base-VG-factual-sg",
-  "adapters": {
-    "adapters": {},
-    "config_map": {},
-    "fusion_config_map": {},
-    "fusions": {}
-  },
-  "architectures": [
-    "T5ForConditionalGeneration"
-  ],
-  "classifier_dropout": 0.0,
-  "d_ff": 2048,
-  "d_kv": 64,
-  "d_model": 768,
-  "decoder_start_token_id": 0,
-  "dense_act_fn": "gelu_new",
-  "dropout_rate": 0.1,
-  "eos_token_id": 1,
-  "feed_forward_proj": "gated-gelu",
-  "initializer_factor": 1.0,
-  "is_encoder_decoder": true,
-  "is_gated_act": true,
-  "layer_norm_epsilon": 1e-06,
-  "model_type": "t5",
-  "n_positions": 512,
-  "num_decoder_layers": 12,
-  "num_heads": 12,
-  "num_layers": 12,
-  "output_past": true,
-  "pad_token_id": 0,
-  "relative_attention_max_distance": 128,
-  "relative_attention_num_buckets": 32,
-  "task_specific_params": {
-    "summarization": {
-      "early_stopping": true,
-      "length_penalty": 2.0,
-      "max_length": 200,
-      "min_length": 30,
-      "no_repeat_ngram_size": 3,
-      "num_beams": 4,
-      "prefix": "summarize: "
-    },
-    "translation_en_to_de": {
-      "early_stopping": true,
-      "max_length": 300,
-      "num_beams": 4,
-      "prefix": "translate English to German: "
-    },
-    "translation_en_to_fr": {
-      "early_stopping": true,
-      "max_length": 300,
-      "num_beams": 4,
-      "prefix": "translate English to French: "
-    },
-    "translation_en_to_ro": {
-      "early_stopping": true,
-      "max_length": 300,
-      "num_beams": 4,
-      "prefix": "translate English to Romanian: "
-    }
-  },
-  "tie_word_embeddings": false,
-  "torch_dtype": "float32",
-  "transformers_version": "4.45.0",
-  "use_cache": true,
-  "vocab_size": 32128
-}
-
-[INFO|modeling_utils.py:3726] 2026-07-22 12:44:30,616 >> loading weights file model.safetensors from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/model.safetensors
-[INFO|configuration_utils.py:1099] 2026-07-22 12:44:30,649 >> Generate config GenerationConfig {
-  "decoder_start_token_id": 0,
-  "eos_token_id": 1,
-  "pad_token_id": 0
-}
-
-[INFO|modeling_utils.py:4568] 2026-07-22 12:44:30,980 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
-
-[INFO|modeling_utils.py:4576] 2026-07-22 12:44:30,980 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at lizhuang144/flan-t5-base-VG-factual-sg.
-If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
-[INFO|configuration_utils.py:1054] 2026-07-22 12:44:31,272 >> loading configuration file generation_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/generation_config.json
-[INFO|configuration_utils.py:1099] 2026-07-22 12:44:31,272 >> Generate config GenerationConfig {
-  "decoder_start_token_id": 0,
-  "eos_token_id": 1,
-  "pad_token_id": 0
-}
-
-07/22/2026 12:44:38 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_04975.jpg candidates=[]
-07/22/2026 12:44:41 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg candidates=['water surface', 'upper level', 'ramp']
-07/22/2026 12:44:41 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg
-07/22/2026 12:44:41 - INFO - llamafactory.train.sc.yolo_verifier - Using Apple Silicon MPS for YOLO verification
-07/22/2026 12:44:41 - INFO - llamafactory.train.sc.yolo_verifier - Loading YOLO model=yolov8x.pt device=mps
-07/22/2026 12:44:42 - INFO - llamafactory.train.sc.yolo_verifier - Cached 2 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg
-07/22/2026 12:44:42 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
-07/22/2026 12:44:42 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
-07/22/2026 12:44:42 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
-07/22/2026 12:44:48 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg candidates=['light', 'vehicle']
-07/22/2026 12:44:48 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
-07/22/2026 12:44:48 - INFO - llamafactory.train.sc.yolo_verifier - Cached 5 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
-07/22/2026 12:44:48 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
-07/22/2026 12:44:48 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
-07/22/2026 12:44:52 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01679.jpg candidates=[]
-07/22/2026 12:44:55 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01700.jpg candidates=[]
-07/22/2026 12:44:58 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg candidates=['kohana']
-07/22/2026 12:44:58 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
-07/22/2026 12:44:58 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
-07/22/2026 12:44:58 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg []
-07/22/2026 12:45:04 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg candidates=['dot patterns', 'nose', 'eye', 'dot']
-07/22/2026 12:45:04 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
-07/22/2026 12:45:04 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
-07/22/2026 12:45:04 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 12:45:04 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 12:45:04 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 12:45:04 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 12:45:09 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03593.jpg candidates=[]
-07/22/2026 12:45:14 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg candidates=['banner']
-07/22/2026 12:45:14 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
-07/22/2026 12:45:14 - INFO - llamafactory.train.sc.yolo_verifier - Cached 9 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
-07/22/2026 12:45:14 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg [('chair', 0.83), ('chair', 0.83), ('chair', 0.77), ('chair', 0.71), ('chair', 0.63), ('dining table', 0.5), ('dining table', 0.48), ('chair', 0.41), ('chair', 0.36)]
-07/22/2026 12:45:17 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00203.jpg candidates=[]
+07/22/2026 23:07:20 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
+07/22/2026 23:07:20 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
+07/22/2026 23:07:27 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg candidates=['light', 'vehicle']
+07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
+07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - Cached 5 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
+07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
+07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
+07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - Semantic verification match image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg object=vehicle detected=car similarity=0.8504 confidence=0.7771 threshold=0.72
+07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - YOLO semantic verification SUCCESS image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg object=vehicle matched_label=car similarity=0.8504 confidence=0.7771
+07/22/2026 23:07:32 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01679.jpg candidates=[]
+07/22/2026 23:07:35 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01700.jpg candidates=[]
+07/22/2026 23:07:37 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg candidates=['kohana']
+07/22/2026 23:07:37 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
+07/22/2026 23:07:38 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
+07/22/2026 23:07:38 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg []
+07/22/2026 23:07:43 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg candidates=['dot patterns', 'eye', 'nose', 'dot']
+07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
+07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
+07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:07:49 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03593.jpg candidates=[]
+07/22/2026 23:07:53 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg candidates=['banner']
+07/22/2026 23:07:53 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
+07/22/2026 23:07:53 - INFO - llamafactory.train.sc.yolo_verifier - Cached 9 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
+07/22/2026 23:07:53 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg [('chair', 0.83), ('chair', 0.83), ('chair', 0.77), ('chair', 0.71), ('chair', 0.63), ('dining table', 0.5), ('dining table', 0.48), ('chair', 0.41), ('chair', 0.36)]
+07/22/2026 23:07:56 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00203.jpg candidates=[]
