@@ -2,7 +2,9 @@ import logging
 import re
 import threading
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+from torch import embedding
 
 try:
     from nltk.stem import WordNetLemmatizer
@@ -24,15 +26,21 @@ class YoloObjectVerifier:
         self,
         model_name: str = "yolov8x.pt",
         confidence_threshold: float = 0.25,
+        semantic_similarity_threshold: float = 0.72,
         allow_download: bool = False,
     ) -> None:
         self.model_name = model_name
         self.confidence_threshold = confidence_threshold
+        self.semantic_similarity_threshold = semantic_similarity_threshold
         self.allow_download = allow_download
         self._model = None
+        self._semantic_model = None
+        self._semantic_model_failed = False
         self._device: Optional[str] = None
         self._cache: Dict[Path, List[Dict[str, Any]]] = {}
+        self._embedding_cache: Dict[str, Tuple[float, ...]] = {}
         self._lock = threading.Lock()
+        self._semantic_lock = threading.Lock()
 
     def verify(self, image_path: str, object_name: str) -> Dict[str, Any]:
         """Verify whether an object is detected in an image.
@@ -65,26 +73,78 @@ class YoloObjectVerifier:
 
         best_confidence = 0.0
         matched_label: Optional[str] = None
+        best_similarity = 0.0
+        match_type = "none"
         for detection in detections:
-            detected_name = detection["name"]
+            detected_name = self._normalize_object_name(detection["name"])
             if self._is_matching_label(normalized_object, detected_name):
                 best_confidence = max(best_confidence, detection["confidence"])
                 if detection["confidence"] == best_confidence:
                     matched_label = detected_name
+                    best_similarity = 1.0
+                    match_type = "exact"
+
+        if matched_label is None:
+            for detection in detections:
+                detected_name = self._normalize_object_name(detection["name"])
+                similarity = self._semantic_similarity(normalized_object, detected_name)
+                if similarity > 0.5:
+                    LOGGER.debug(
+                        "Semantic similarity: object=%s detected=%s similarity=%.4f",
+                        normalized_object,
+                        detected_name,
+                        similarity,
+                    )
+
+                if similarity > best_similarity:
+                    best_similarity = similarity
+
+                if similarity >= self.semantic_similarity_threshold:
+                    detection_confidence = float(detection["confidence"])
+                    LOGGER.info(
+                        "Semantic verification match image=%s object=%s detected=%s "
+                        "similarity=%.4f confidence=%.4f threshold=%.2f",
+                        image,
+                        normalized_object,
+                        detected_name,
+                        similarity,
+                        detection_confidence,
+                        self.semantic_similarity_threshold,
+                    )
+                    if detection_confidence >= best_confidence:
+                        best_confidence = detection_confidence
+                        matched_label = detected_name
+                        match_type = "semantic"
 
         verified = best_confidence >= self.confidence_threshold
+        if match_type == "semantic":
+            LOGGER.info(
+                "YOLO semantic verification SUCCESS image=%s object=%s "
+                "matched_label=%s similarity=%.4f confidence=%.4f",
+                image,
+                normalized_object,
+                matched_label,
+                best_similarity,
+                best_confidence,
+            )
+
         result = {
             "verified": verified, 
             "confidence": float(best_confidence),
             "matched_label": matched_label,
-            "error": None
+            "semantic_similarity": float(best_similarity) if matched_label is not None else best_similarity,
+            "match_type": match_type,
+            "error": None,
         }
         LOGGER.debug(
-            "YOLO verification result image=%s object=%s verified=%s confidence=%.4f",
+            "YOLO verification result image=%s object=%s verified=%s confidence=%.4f matched_label=%s match_type=%s semantic_similarity=%.4f",
             image,
             normalized_object,
             verified,
             best_confidence,
+            matched_label,
+            match_type,
+            result["semantic_similarity"]
         )
         return result
     
@@ -138,6 +198,77 @@ class YoloObjectVerifier:
                 raise YoloVerificationError(f"Unable to load YOLO model {self.model_name}: {exc}") from exc
             self._model = model
             return self._model
+
+    def _get_semantic_model(self) -> Optional[Any]:
+        with self._semantic_lock:
+            if self._semantic_model is not None:
+                return self._semantic_model
+
+            if self._semantic_model_failed:
+                return None
+
+            try:
+                from sentence_transformers import SentenceTransformer
+            except ImportError:
+                LOGGER.warning(
+                    "sentence-transformers is not available; semantic fallback matching is disabled"
+                )
+                self._semantic_model_failed = True
+                return None
+
+            try:
+                LOGGER.info(
+                    "Loading semantic similarity model=%s",
+                    "sentence-transformers/all-mpnet-base-v2",
+                )
+                self._semantic_model = SentenceTransformer("sentence-transformers/all-mpnet-base-v2")
+            except Exception as exc:
+                LOGGER.warning("Failed to load semantic similarity model: %s", exc)
+                self._semantic_model_failed = True
+                return None
+
+            return self._semantic_model
+
+    def _semantic_similarity(self, object_name: str, detected_label: str) -> float:
+        normalized_object = self._normalize_object_name(object_name)
+        normalized_detected = self._normalize_object_name(detected_label)
+        if not normalized_object or not normalized_detected:
+            return 0.0
+
+        if normalized_object == normalized_detected:
+            return 1.0
+
+        object_embedding = self._get_text_embedding(normalized_object)
+        detected_embedding = self._get_text_embedding(normalized_detected)
+        if object_embedding is None or detected_embedding is None:
+            return 0.0
+
+        return max(0.0, min(1.0, sum(left * right for left, right in zip(object_embedding, detected_embedding))))
+
+    def _get_text_embedding(self, label: str) -> Optional[Tuple[float, ...]]:
+        normalized_label = self._normalize_object_name(label)
+        if not normalized_label:
+            return None
+
+        with self._semantic_lock:
+            cached_embedding = self._embedding_cache.get(normalized_label)
+            if cached_embedding is not None:
+                return cached_embedding
+
+        model = self._get_semantic_model()
+        if model is None:
+            return None
+
+        try:
+            embedding = model.encode(normalized_label, normalize_embeddings=True)
+        except Exception as exc:
+            LOGGER.warning("Failed to encode semantic label=%s: %s", normalized_label, exc)
+            return None
+
+        normalized_embedding = self._to_embedding_tuple(embedding)
+        with self._semantic_lock:
+            self._embedding_cache[normalized_label] = normalized_embedding
+        return normalized_embedding
 
     @staticmethod
     def _import_yolo() -> Any:
@@ -237,6 +368,8 @@ class YoloObjectVerifier:
             "verified": False,
             "confidence": 0.0,
             "matched_label": None,
+            "semantic_similarity": 0.0,
+            "match_type": "none",
             "error": error,
         }
 
@@ -274,6 +407,19 @@ class YoloObjectVerifier:
             return list(values.tolist())
         return list(values)
 
+    @staticmethod
+    def _to_embedding_tuple(values: Any) -> Tuple[float, ...]:
+        if hasattr(values, "detach"):
+            values = values.detach()
+        if hasattr(values, "cpu"):
+            values = values.cpu()
+        if hasattr(values, "tolist"):
+            values = values.tolist()
+
+        if values and isinstance(values[0], list):
+            values = values[0]
+
+        return tuple(float(value) for value in values )
 
 _DEFAULT_VERIFIER = YoloObjectVerifier()
 
