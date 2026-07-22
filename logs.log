@@ -1,116 +1,35 @@
-[INFO|modeling_utils.py:3726] 2026-07-22 23:07:00,170 >> loading weights file model.safetensors from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/model.safetensors
-[INFO|configuration_utils.py:1099] 2026-07-22 23:07:00,203 >> Generate config GenerationConfig {
-  "decoder_start_token_id": 0,
-  "eos_token_id": 1,
-  "pad_token_id": 0
-}
-
-[INFO|modeling_utils.py:4568] 2026-07-22 23:07:00,537 >> All model checkpoint weights were used when initializing T5ForConditionalGeneration.
-
-[INFO|modeling_utils.py:4576] 2026-07-22 23:07:00,537 >> All the weights of T5ForConditionalGeneration were initialized from the model checkpoint at lizhuang144/flan-t5-base-VG-factual-sg.
-If your task is similar to the task the model of the checkpoint was trained on, you can already use T5ForConditionalGeneration for predictions without further training.
-[INFO|configuration_utils.py:1054] 2026-07-22 23:07:01,168 >> loading configuration file generation_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--lizhuang144--flan-t5-base-VG-factual-sg/snapshots/b7923dae0e6f924fe37957a1cee920dac1d50a7f/generation_config.json
-[INFO|configuration_utils.py:1099] 2026-07-22 23:07:01,169 >> Generate config GenerationConfig {
-  "decoder_start_token_id": 0,
-  "eos_token_id": 1,
-  "pad_token_id": 0
-}
-
-07/22/2026 23:07:08 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_04975.jpg candidates=[]
-07/22/2026 23:07:11 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg candidates=['ramp', 'water surface', 'upper level']
-07/22/2026 23:07:11 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg
-07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Using Apple Silicon MPS for YOLO verification
-07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Loading YOLO model=yolov8x.pt device=mps
-07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Cached 2 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg
-07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
-07/22/2026 23:07:12 - INFO - llamafactory.train.sc.yolo_verifier - Loading semantic similarity model=sentence-transformers/all-mpnet-base-v2
-[INFO|configuration_utils.py:672] 2026-07-22 23:07:17,052 >> loading configuration file config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/config.json
-[INFO|configuration_utils.py:739] 2026-07-22 23:07:17,054 >> Model config MPNetConfig {
-  "_name_or_path": "sentence-transformers/all-mpnet-base-v2",
-  "architectures": [
-    "MPNetForMaskedLM"
-  ],
-  "attention_probs_dropout_prob": 0.1,
-  "bos_token_id": 0,
-  "eos_token_id": 2,
-  "hidden_act": "gelu",
-  "hidden_dropout_prob": 0.1,
-  "hidden_size": 768,
-  "initializer_range": 0.02,
-  "intermediate_size": 3072,
-  "layer_norm_eps": 1e-05,
-  "max_position_embeddings": 514,
-  "model_type": "mpnet",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 12,
-  "pad_token_id": 1,
-  "relative_attention_num_buckets": 32,
-  "transformers_version": "4.45.0",
-  "vocab_size": 30527
-}
-
-[INFO|modeling_utils.py:3726] 2026-07-22 23:07:17,055 >> loading weights file model.safetensors from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/model.safetensors
-[INFO|modeling_utils.py:4568] 2026-07-22 23:07:17,092 >> All model checkpoint weights were used when initializing MPNetModel.
-
-[INFO|modeling_utils.py:4576] 2026-07-22 23:07:17,092 >> All the weights of MPNetModel were initialized from the model checkpoint at sentence-transformers/all-mpnet-base-v2.
-If your task is similar to the task the model of the checkpoint was trained on, you can already use MPNetModel for predictions without further training.
-[INFO|configuration_utils.py:672] 2026-07-22 23:07:19,003 >> loading configuration file config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/config.json
-[INFO|configuration_utils.py:739] 2026-07-22 23:07:19,004 >> Model config MPNetConfig {
-  "_name_or_path": "sentence-transformers/all-mpnet-base-v2",
-  "architectures": [
-    "MPNetForMaskedLM"
-  ],
-  "attention_probs_dropout_prob": 0.1,
-  "bos_token_id": 0,
-  "eos_token_id": 2,
-  "hidden_act": "gelu",
-  "hidden_dropout_prob": 0.1,
-  "hidden_size": 768,
-  "initializer_range": 0.02,
-  "intermediate_size": 3072,
-  "layer_norm_eps": 1e-05,
-  "max_position_embeddings": 514,
-  "model_type": "mpnet",
-  "num_attention_heads": 12,
-  "num_hidden_layers": 12,
-  "pad_token_id": 1,
-  "relative_attention_num_buckets": 32,
-  "transformers_version": "4.45.0",
-  "vocab_size": 30527
-}
-
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file vocab.txt from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/vocab.txt
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file tokenizer.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer.json
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file added_tokens.json from cache at None
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file special_tokens_map.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/special_tokens_map.json
-[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:07:19,414 >> loading file tokenizer_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer_config.json
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:21:01,136 >> loading file vocab.txt from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/vocab.txt
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:21:01,136 >> loading file tokenizer.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer.json
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:21:01,136 >> loading file added_tokens.json from cache at None
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:21:01,136 >> loading file special_tokens_map.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/special_tokens_map.json
+[INFO|tokenization_utils_base.py:2214] 2026-07-22 23:21:01,136 >> loading file tokenizer_config.json from cache at /Users/rutvika/.cache/huggingface/hub/models--sentence-transformers--all-mpnet-base-v2/snapshots/e8c3b32edf5434bc2275fc9bab85f82640a19130/tokenizer_config.json
 /opt/homebrew/Caskroom/miniforge/base/envs/iitj/lib/python3.10/site-packages/transformers/tokenization_utils_base.py:1617: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be deprecated in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
   warnings.warn(
-07/22/2026 23:07:20 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
-07/22/2026 23:07:20 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
-07/22/2026 23:07:27 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg candidates=['light', 'vehicle']
-07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
-07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - Cached 5 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
-07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
-07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
-07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - Semantic verification match image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg object=vehicle detected=car similarity=0.8504 confidence=0.7771 threshold=0.72
-07/22/2026 23:07:27 - INFO - llamafactory.train.sc.yolo_verifier - YOLO semantic verification SUCCESS image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg object=vehicle matched_label=car similarity=0.8504 confidence=0.7771
-07/22/2026 23:07:32 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01679.jpg candidates=[]
-07/22/2026 23:07:35 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01700.jpg candidates=[]
-07/22/2026 23:07:37 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg candidates=['kohana']
-07/22/2026 23:07:37 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
-07/22/2026 23:07:38 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
-07/22/2026 23:07:38 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg []
-07/22/2026 23:07:43 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg candidates=['dot patterns', 'eye', 'nose', 'dot']
-07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
-07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
-07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 23:07:43 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
-07/22/2026 23:07:49 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03593.jpg candidates=[]
-07/22/2026 23:07:53 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg candidates=['banner']
-07/22/2026 23:07:53 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
-07/22/2026 23:07:53 - INFO - llamafactory.train.sc.yolo_verifier - Cached 9 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
-07/22/2026 23:07:53 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg [('chair', 0.83), ('chair', 0.83), ('chair', 0.77), ('chair', 0.71), ('chair', 0.63), ('dining table', 0.5), ('dining table', 0.48), ('chair', 0.41), ('chair', 0.36)]
-07/22/2026 23:07:56 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00203.jpg candidates=[]
+07/22/2026 23:21:02 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
+07/22/2026 23:21:02 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00475.jpg [('bird', 0.91), ('boat', 0.43)]
+07/22/2026 23:21:08 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg candidates=['light', 'vehicle']
+07/22/2026 23:21:08 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
+07/22/2026 23:21:08 - INFO - llamafactory.train.sc.yolo_verifier - Cached 5 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg
+07/22/2026 23:21:08 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
+07/22/2026 23:21:08 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg [('car', 0.78), ('traffic light', 0.68), ('person', 0.68), ('traffic light', 0.54), ('potted plant', 0.27)]
+07/22/2026 23:21:08 - INFO - llamafactory.train.sc.yolo_verifier - Semantic verification match image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg object=vehicle detected=car similarity=0.8504 confidence=0.7771 threshold=0.65
+07/22/2026 23:21:08 - INFO - llamafactory.train.sc.yolo_verifier - YOLO semantic verification SUCCESS image=/Users/rutvika/source_code/dataset/docci/test_02020.jpg object=vehicle matched_label=car similarity=0.8504 confidence=0.7771
+07/22/2026 23:21:13 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01679.jpg candidates=[]
+07/22/2026 23:21:16 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_01700.jpg candidates=[]
+07/22/2026 23:21:19 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg candidates=['kohana']
+07/22/2026 23:21:19 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
+07/22/2026 23:21:19 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg
+07/22/2026 23:21:19 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_03577.jpg []
+07/22/2026 23:21:24 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg candidates=['dot patterns', 'dot', 'nose', 'eye']
+07/22/2026 23:21:24 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
+07/22/2026 23:21:24 - INFO - llamafactory.train.sc.yolo_verifier - Cached 0 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg
+07/22/2026 23:21:24 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:21:24 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:21:24 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:21:24 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_00621.jpg []
+07/22/2026 23:21:29 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_03593.jpg candidates=[]
+07/22/2026 23:21:33 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg candidates=['banner']
+07/22/2026 23:21:33 - INFO - llamafactory.train.sc.yolo_verifier - Running YOLO detection for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
+07/22/2026 23:21:33 - INFO - llamafactory.train.sc.yolo_verifier - Cached 9 YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg
+07/22/2026 23:21:33 - INFO - llamafactory.train.sc.yolo_verifier - YOLO detections for image=/Users/rutvika/source_code/dataset/docci/test_04650.jpg [('chair', 0.83), ('chair', 0.83), ('chair', 0.77), ('chair', 0.71), ('chair', 0.63), ('dining table', 0.5), ('dining table', 0.48), ('chair', 0.41), ('chair', 0.36)]
+07/22/2026 23:21:36 - INFO - llamafactory.train.sft.trainer - Verification candidates image=/Users/rutvika/source_code/dataset/docci/test_00203.jpg candidates=[]
