@@ -352,11 +352,11 @@ class FinetuningArguments(FreezeArguments, LoraArguments, RLHFArguments, GaloreA
     metadata={"help": "Whether or not to enable YOLO-based object verification in SC training."},
     )
     verification_model: str = field(
-        default="yolov8n.pt",
+        default="yolov8x.pt",
         metadata={"help": "The YOLO model checkpoint used for verification-aware SC training."},
     )
     verification_threshold: float = field(
-        default=0.40,
+        default=0.25,
         metadata={"help": "Confidence threshold used by the verification model. Must be between 0.0 and 1.0."},
     )
     verification_penalty_reduction: float = field(

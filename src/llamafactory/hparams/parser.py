@@ -211,10 +211,10 @@ def get_train_args(args: Optional[Dict[str, Any]] = None) -> _TRAIN_CLS:
     if training_args.do_train and data_args.dataset is None:
         raise ValueError("Please specify dataset for training.")
     
-    if (not finetuning_args.verification_enabled) and finetuning_args.verification_threshold != 0.40:
+    if (not finetuning_args.verification_enabled) and finetuning_args.verification_threshold != 0.25:
         logger.warning("`verification_threshold` is set but `verification_enabled` is False, so the threshold will be ignored.")
         
-    if (not finetuning_args.verification_enabled) and finetuning_args.verification_model != "yolov8n.pt":
+    if (not finetuning_args.verification_enabled) and finetuning_args.verification_model != "yolov8x.pt":
         logger.warning("`verification_model` is set but `verification_enabled` is False, so the model path will be ignored.")
 
     if (not finetuning_args.verification_enabled) and finetuning_args.verification_penalty_reduction != 1.0:

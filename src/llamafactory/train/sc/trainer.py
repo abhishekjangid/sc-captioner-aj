@@ -328,7 +328,12 @@ class CustomSCTrainer(OnlineDPOTrainer):
 
     def _verify_object_with_yolo(self, image_path: Optional[str], object_name: str) -> Dict[str, Any]:
         if not self.verification_enabled or self.yolo_verifier is None or not image_path:
-            return {"verified": False, "confidence": 0.0, "matched_label": None}
+            return {
+                "verified": False, 
+                "confidence": 0.0, 
+                "matched_label": None,
+                "query_label": None,
+            }
 
         try:
             verification = self.yolo_verifier.verify(image_path=image_path, object_name=object_name)
@@ -339,12 +344,13 @@ class CustomSCTrainer(OnlineDPOTrainer):
                 object_name,
                 exc,
             )
-            return {"verified": False, "confidence": 0.0, "matched_label": None}
+            return {"verified": False, "confidence": 0.0, "matched_label": None, "query_label": None}
         
         return {
             "verified": bool(verification.get("verified", False)),
             "confidence": float(verification.get("confidence", 0.0)),
             "matched_label": verification.get("matched_label"),
+            "query_label": verification.get("query_label"),
         }
 
     def _build_yolo_verification_results(
@@ -353,11 +359,16 @@ class CustomSCTrainer(OnlineDPOTrainer):
         object_names: List[str],
     ) -> Dict[str, Dict[str, Any]]:
         verification_results: Dict[str, Dict[str, Any]] = {}
+        normalized_candidates: List[str] = []
         for object_name in object_names:
             normalized_name = object_name.strip().lower()
             if not normalized_name or normalized_name in verification_results:
                 continue
-            
+            normalized_candidates.append(normalized_name)
+
+        LOGGER.info("Verification candidates image=%s candidates=%s", image_path, normalized_candidates)
+
+        for normalized_name in normalized_candidates:
             verification_results[normalized_name] = self._verify_object_with_yolo(image_path, normalized_name)
             
         return verification_results

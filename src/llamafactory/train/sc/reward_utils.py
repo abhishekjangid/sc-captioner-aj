@@ -213,11 +213,11 @@ def get_revision(
         for word in removed_objects:
             singular_word = wnl.lemmatize(word, pos='n')
             if singular_word not in stop_words_list:
-                removed_objects_cache.add(word)
+                removed_objects_cache.add(singular_word)
         for word in added_objects:
             singular_word = wnl.lemmatize(word, pos='n')
             if singular_word not in stop_words_list:
-                added_objects_cache.add(word)
+                added_objects_cache.add(singular_word)
 
         removed_objects = removed_objects_cache
         added_objects = added_objects_cache

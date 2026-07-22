@@ -4,7 +4,13 @@ import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
+try:
+    from nltk.stem import WordNetLemmatizer
+except ImportError:
+    WordNetLemmatizer = None  # type: ignore
+
 LOGGER = logging.getLogger(__name__)
+_LEMMATIZER = WordNetLemmatizer() if WordNetLemmatizer is not None else None
 
 
 class YoloVerificationError(RuntimeError):
@@ -16,7 +22,7 @@ class YoloObjectVerifier:
 
     def __init__(
         self,
-        model_name: str = "yolov8n.pt",
+        model_name: str = "yolov8x.pt",
         confidence_threshold: float = 0.25,
         allow_download: bool = False,
     ) -> None:
@@ -50,6 +56,12 @@ class YoloObjectVerifier:
             if isinstance(exc, YoloVerificationError):
                 return self._empty_result(error=str(exc))
             return self._empty_result(error=str(exc))
+        
+        LOGGER.info(
+            "YOLO detections for image=%s %s",
+            image,
+            [(detection["name"], round(float(detection["confidence"]), 2)) for detection in detections]
+        )
 
         best_confidence = 0.0
         matched_label: Optional[str] = None
@@ -157,8 +169,45 @@ class YoloObjectVerifier:
     def _normalize_object_name(object_name: str) -> str:
         normalized = re.sub(r"[^a-z0-9\s_-]+", "", object_name.strip().lower())
         normalized = re.sub(r"[_-]+", " ", normalized)
-        return re.sub(r"\s+", " ", normalized).strip()
+        normalized = re.sub(r"\s+", " ", normalized).strip()
+        return YoloObjectVerifier._lemmatize_label(normalized)
 
+
+    @staticmethod
+    def _lemmatize_label(label: str) -> str:
+        tokens = [token for token in label.split() if token]
+        if not tokens:
+            return ""
+
+        lemmatized_tokens = [YoloObjectVerifier._lemmatize_token(token) for token in tokens]
+        return " ".join(token for token in lemmatized_tokens if token).strip()
+
+    @staticmethod
+    def _lemmatize_token(token: str) -> str:
+        if _LEMMATIZER is None:
+            return YoloObjectVerifier._fallback_singularize(token)
+
+        try:
+            return _LEMMATIZER.lemmatize(token, pos="n")
+        except LookupError:
+            LOGGER.warning("WordNet data is unavailable; skipping lemmatization for token=%s", token)
+            return YoloObjectVerifier._fallback_singularize(token)
+
+    @staticmethod
+    def _fallback_singularize(token: str) -> str:
+        if len(token) <= 3:
+            return token
+
+        if token.endswith("ies") and len(token) > 4:
+            return token[:-3] + "y"
+
+        if token.endswith(("ches", "shes", "sses", "xes", "zes")) and len(token) > 4:
+            return token[:-2]
+
+        if token.endswith("s") and not token.endswith(("ss", "us", "is")):
+            return token[:-1]
+
+        return token
     @classmethod
     def _is_matching_label(cls, object_name: str, detected_name: str) -> bool:
         object_variants = cls._label_variants(object_name)
